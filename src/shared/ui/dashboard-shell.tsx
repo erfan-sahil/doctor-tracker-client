@@ -65,16 +65,20 @@ export function DashboardShell({ children }: { children: ReactNode }) {
   return (
     <DashboardNavigationProvider>
     <SidebarProvider>
+      <div
+        aria-hidden
+        className="bg-sidebar-border pointer-events-none fixed inset-x-0 top-14 z-[11] hidden h-px md:block"
+      />
       <DashboardMobileSidebarSync />
       <Sidebar collapsible="icon">
-        <SidebarHeader className="gap-2 pb-0">
+        <SidebarHeader className="h-14 shrink-0 justify-center gap-0 p-2 pb-0">
           <SidebarMenu className="gap-0">
             <SidebarMenuItem>
               <SidebarMenuButton
                 size="lg"
                 asChild
                 tooltip={siteConfig.name}
-                className="hover:bg-transparent hover:text-sidebar-foreground active:bg-transparent active:text-sidebar-foreground data-active:bg-transparent data-active:text-sidebar-foreground data-active:font-semibold"
+                className="hover:bg-transparent hover:text-sidebar-foreground active:bg-transparent active:text-sidebar-foreground data-active:bg-transparent data-active:text-sidebar-foreground data-active:font-semibold group-data-[collapsible=icon]:mx-auto"
               >
                 <DashboardNavLink href={siteConfig.routes.overview} aria-label={siteConfig.name}>
                   <Image
@@ -91,7 +95,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarHeader>
-        <Separator className="bg-sidebar-border mx-3 w-auto" />
+        <Separator className="bg-sidebar-border mx-3 w-auto group-data-[collapsible=icon]:hidden" />
         <SidebarContent>
           <SidebarGroup>
             <SidebarGroupContent>
@@ -127,7 +131,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
       </Sidebar>
       <SidebarInset className="flex min-h-svh min-w-0 flex-col">
         <DashboardNavigationProgress />
-        <header className="bg-background/95 supports-backdrop-filter:backdrop-blur-sm sticky top-0 z-10 flex min-h-14 shrink-0 items-center gap-2 border-b px-3 sm:gap-3 sm:px-4 md:px-6">
+        <header className="bg-background supports-backdrop-filter:backdrop-blur-sm sticky top-0 z-10 flex h-14 shrink-0 items-center gap-2 border-b border-sidebar-border px-3 sm:gap-3 sm:px-4 md:border-b-0 md:bg-background/95 md:px-6">
           <SidebarTrigger className="shrink-0" />
           <Separator orientation="vertical" className="hidden h-4 sm:block" />
           <span className="min-w-0 flex-1 truncate text-sm font-medium sm:text-base">

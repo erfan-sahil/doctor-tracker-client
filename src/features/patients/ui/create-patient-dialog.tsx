@@ -38,7 +38,9 @@ import { DialogScrollArea } from "@/shared/ui/scroll-area";
 type CreatePatientDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  doctors: PatientFilterDoctorOption[];
+  doctors?: PatientFilterDoctorOption[];
+  fixedDoctor?: PatientFilterDoctorOption;
+  invalidateDoctorPatientsId?: string;
 };
 
 const defaultValues: CreatePatientFormValues = {
@@ -62,9 +64,16 @@ function applyCreatePatientError(
   setError("root", { message: error.message });
 }
 
-export function CreatePatientDialog({ open, onOpenChange, doctors }: CreatePatientDialogProps) {
+export function CreatePatientDialog({
+  open,
+  onOpenChange,
+  doctors = [],
+  fixedDoctor,
+  invalidateDoctorPatientsId,
+}: CreatePatientDialogProps) {
   const role = useSessionStore((state) => state.user?.role);
   const isAdmin = role === "admin";
+  const showDoctorPicker = isAdmin && !fixedDoctor;
 
   const form = useForm<CreatePatientFormValues>({
     resolver: zodResolver(createPatientSchema),
@@ -75,17 +84,29 @@ export function CreatePatientDialog({ open, onOpenChange, doctors }: CreatePatie
   const { reset, setError, clearErrors, formState } = form;
   const rootError = formState.errors.root?.message;
 
-  const createMutation = useCreatePatientMutation();
+  const createMutation = useCreatePatientMutation({
+    invalidateDoctorPatientsId: invalidateDoctorPatientsId ?? fixedDoctor?.id,
+  });
 
   useEffect(() => {
     if (!open) {
-      reset(defaultValues);
+      reset(
+        fixedDoctor
+          ? { ...defaultValues, doctorId: fixedDoctor.id }
+          : defaultValues,
+      );
+      clearErrors();
+      return;
+    }
+
+    if (fixedDoctor) {
+      reset({ ...defaultValues, doctorId: fixedDoctor.id });
       clearErrors();
     }
-  }, [open, reset, clearErrors]);
+  }, [open, reset, clearErrors, fixedDoctor]);
 
   const onSubmit = form.handleSubmit(async (values) => {
-    if (isAdmin && !values.doctorId?.trim()) {
+    if ((isAdmin || fixedDoctor) && !values.doctorId?.trim()) {
       form.setError("doctorId", { message: "Doctor is required" });
       return;
     }
@@ -94,7 +115,11 @@ export function CreatePatientDialog({ open, onOpenChange, doctors }: CreatePatie
 
     try {
       await createMutation.mutateAsync(toCreatePatientInput(values));
-      reset(defaultValues);
+      reset(
+        fixedDoctor
+          ? { ...defaultValues, doctorId: fixedDoctor.id }
+          : defaultValues,
+      );
       onOpenChange(false);
     } catch (error) {
       applyCreatePatientError(error, setError);
@@ -118,7 +143,11 @@ export function CreatePatientDialog({ open, onOpenChange, doctors }: CreatePatie
           icon={UserPlus}
           eyebrow="New patient"
           title="Add patient"
-          description="Create a patient record and assign them to a doctor on the roster."
+          description={
+            fixedDoctor
+              ? `New patient for ${fixedDoctor.name}.`
+              : "Create a patient record and assign them to a doctor on the roster."
+          }
           headerClassName={patientDialogHeaderClassName}
           className="shrink-0"
         />
@@ -150,7 +179,30 @@ export function CreatePatientDialog({ open, onOpenChange, doctors }: CreatePatie
                   )}
                 />
 
-                {isAdmin ? (
+                {fixedDoctor ? (
+                  <FormField
+                    control={form.control}
+                    name="doctorId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Doctor</FormLabel>
+                        <FormControl>
+                          <PatientDoctorCombobox
+                            value={field.value || fixedDoctor.id}
+                            onValueChange={() => undefined}
+                            doctors={[fixedDoctor]}
+                            disabled
+                            placeholder={fixedDoctor.name}
+                            variant="rich"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                ) : null}
+
+                {showDoctorPicker ? (
                   <FormField
                     control={form.control}
                     name="doctorId"

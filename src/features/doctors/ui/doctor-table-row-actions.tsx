@@ -1,6 +1,6 @@
 "use client";
 
-import { EllipsisVertical, Eye, Pencil, Trash2 } from "lucide-react";
+import { EllipsisVertical, Eye, Pencil, Trash2, Users } from "lucide-react";
 
 import type { DoctorWithUser } from "@/features/doctors/model/types";
 import { Button } from "@/shared/ui/button";
@@ -15,6 +15,7 @@ import {
 type DoctorTableRowActionsProps = {
   doctor: DoctorWithUser;
   onDetails: (doctor: DoctorWithUser) => void;
+  onPatients: (doctor: DoctorWithUser) => void;
   onUpdate: (doctor: DoctorWithUser) => void;
   onDelete: (doctor: DoctorWithUser) => void;
 };
@@ -22,6 +23,7 @@ type DoctorTableRowActionsProps = {
 export function DoctorTableRowActions({
   doctor,
   onDetails,
+  onPatients,
   onUpdate,
   onDelete,
 }: DoctorTableRowActionsProps) {
@@ -43,10 +45,14 @@ export function DoctorTableRowActions({
             <EllipsisVertical className="size-4" aria-hidden />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-40">
+        <DropdownMenuContent align="end" className="w-44">
           <DropdownMenuItem onSelect={() => onDetails(doctor)}>
             <Eye className="size-4" aria-hidden />
             Details
+          </DropdownMenuItem>
+          <DropdownMenuItem onSelect={() => onPatients(doctor)}>
+            <Users className="size-4" aria-hidden />
+            Patients
           </DropdownMenuItem>
           <DropdownMenuItem onSelect={() => onUpdate(doctor)}>
             <Pencil className="size-4" aria-hidden />

@@ -18,11 +18,19 @@ type DeletePatientDialogProps = {
   patient: Patient | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  invalidateDoctorPatientsId?: string;
 };
 
-export function DeletePatientDialog({ patient, open, onOpenChange }: DeletePatientDialogProps) {
+export function DeletePatientDialog({
+  patient,
+  open,
+  onOpenChange,
+  invalidateDoctorPatientsId,
+}: DeletePatientDialogProps) {
   const [error, setError] = useState<string | null>(null);
-  const deleteMutation = useDeletePatientMutation();
+  const deleteMutation = useDeletePatientMutation({
+    invalidateDoctorPatientsId: invalidateDoctorPatientsId ?? patient?.doctorId,
+  });
   const pending = deleteMutation.isPending;
 
   const handleOpenChange = (next: boolean) => {

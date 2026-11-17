@@ -29,6 +29,8 @@ export type ListDoctorsParams = {
   search?: string;
   specialization?: string;
   hospital?: string;
+  createdFrom?: string;
+  createdTo?: string;
 };
 
 export type DoctorFilterOptions = {

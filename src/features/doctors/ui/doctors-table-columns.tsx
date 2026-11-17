@@ -8,6 +8,7 @@ import { ActiveStatusBadge } from "@/shared/ui/status-badge";
 
 export type DoctorTableActions = {
   onDetails: (doctor: DoctorWithUser) => void;
+  onPatients: (doctor: DoctorWithUser) => void;
   onUpdate: (doctor: DoctorWithUser) => void;
   onDelete: (doctor: DoctorWithUser) => void;
 };
@@ -84,6 +85,7 @@ export function createDoctorTableColumns(
         <DoctorTableRowActions
           doctor={row.original}
           onDetails={actions.onDetails}
+          onPatients={actions.onPatients}
           onUpdate={actions.onUpdate}
           onDelete={actions.onDelete}
         />

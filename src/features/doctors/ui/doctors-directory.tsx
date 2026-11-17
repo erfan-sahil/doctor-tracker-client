@@ -13,6 +13,7 @@ import type { DoctorWithUser } from "@/features/doctors/model/types";
 import { CreateDoctorDialog } from "@/features/doctors/ui/create-doctor-dialog";
 import { DeleteDoctorDialog } from "@/features/doctors/ui/delete-doctor-dialog";
 import { DoctorDetailsDialog } from "@/features/doctors/ui/doctor-details-dialog";
+import { DoctorPatientsDialog } from "@/features/doctors/ui/doctor-patients-dialog";
 import { DoctorsDataTable } from "@/features/doctors/ui/doctors-data-table";
 import {
   createDoctorTableColumns,
@@ -27,6 +28,7 @@ import { ClearFiltersButton } from "@/shared/ui/clear-filters-button";
 import { DebouncedSearchInput } from "@/shared/ui/debounced-search-input";
 import { Label } from "@/shared/ui/label";
 import { PageHeader } from "@/shared/ui/page-header";
+import { PatientVisitDateFilter } from "@/features/patients/ui/patient-visit-date-filter";
 import { SearchableCombobox } from "@/shared/ui/searchable-combobox";
 import { Skeleton } from "@/shared/ui/skeleton";
 
@@ -38,12 +40,15 @@ export function DoctorsDirectory() {
   const [createOpen, setCreateOpen] = useState(false);
   const [selectedDoctor, setSelectedDoctor] = useState<DoctorWithUser | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
+  const [patientsOpen, setPatientsOpen] = useState(false);
   const [updateOpen, setUpdateOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [specialization, setSpecialization] = useState("");
   const [hospital, setHospital] = useState("");
+  const [createdFrom, setCreatedFrom] = useState("");
+  const [createdTo, setCreatedTo] = useState("");
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10,
@@ -54,7 +59,7 @@ export function DoctorsDirectory() {
     setPagination((current) =>
       current.pageIndex === 0 ? current : { ...current, pageIndex: 0 },
     );
-  }, [debouncedSearch]);
+  }, [debouncedSearch, createdFrom, createdTo, specialization, hospital]);
 
   const queryParams = useMemo<ListDoctorsParams>(() => {
     const params: ListDoctorsParams = {
@@ -71,9 +76,17 @@ export function DoctorsDirectory() {
     if (hospital) {
       params.hospital = hospital;
     }
+    if (createdFrom) {
+      params.createdFrom = createdFrom;
+    }
+    if (createdTo) {
+      params.createdTo = createdTo;
+    }
 
     return params;
   }, [
+    createdFrom,
+    createdTo,
     debouncedSearch,
     hospital,
     pagination.pageIndex,
@@ -98,7 +111,11 @@ export function DoctorsDirectory() {
   const pageCount = data?.totalPages ?? 0;
 
   const filtersActive =
-    search.trim().length > 0 || specialization.length > 0 || hospital.length > 0;
+    search.trim().length > 0 ||
+    specialization.length > 0 ||
+    hospital.length > 0 ||
+    createdFrom.length > 0 ||
+    createdTo.length > 0;
 
   const resetToFirstPage = () => {
     setPagination((current) => ({ ...current, pageIndex: 0 }));
@@ -109,6 +126,8 @@ export function DoctorsDirectory() {
     setDebouncedSearch("");
     setSpecialization("");
     setHospital("");
+    setCreatedFrom("");
+    setCreatedTo("");
     resetToFirstPage();
   };
 
@@ -120,6 +139,10 @@ export function DoctorsDirectory() {
       onDetails: (doctor) => {
         setSelectedDoctor(doctor);
         setDetailsOpen(true);
+      },
+      onPatients: (doctor) => {
+        setSelectedDoctor(doctor);
+        setPatientsOpen(true);
       },
       onUpdate: (doctor) => {
         setSelectedDoctor(doctor);
@@ -159,8 +182,8 @@ export function DoctorsDirectory() {
       <Card>
         <CardHeader className="gap-4">
           <div className="flex min-w-0 flex-col gap-3 lg:flex-row lg:items-end lg:gap-4">
-            <div className="grid min-w-0 flex-1 gap-3 sm:grid-cols-2 xl:grid-cols-5">
-            <div className="flex flex-col gap-2 sm:col-span-2 xl:col-span-2">
+            <div className="grid min-w-0 flex-1 gap-3 sm:grid-cols-2 xl:grid-cols-7">
+            <div className="flex min-w-0 flex-col gap-2 sm:col-span-2 xl:col-span-2">
               <Label htmlFor="doctor-search">Search</Label>
               <div className="relative">
                 <Search
@@ -221,6 +244,34 @@ export function DoctorsDirectory() {
               )}
             </div>
 
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="doctor-created-from">Added from</Label>
+              <PatientVisitDateFilter
+                id="doctor-created-from"
+                value={createdFrom}
+                placeholder="No start date"
+                onValueChange={(next) => {
+                  setCreatedFrom(next);
+                  resetToFirstPage();
+                }}
+                clearLabel="No start date"
+              />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="doctor-created-to">Added to</Label>
+              <PatientVisitDateFilter
+                id="doctor-created-to"
+                value={createdTo}
+                placeholder="No end date"
+                onValueChange={(next) => {
+                  setCreatedTo(next);
+                  resetToFirstPage();
+                }}
+                clearLabel="No end date"
+              />
+            </div>
+
             <DoctorsTableColumnMenu
               columns={tableColumns}
               columnVisibility={columnVisibility}
@@ -264,6 +315,12 @@ export function DoctorsDirectory() {
         doctor={selectedDoctor}
         open={detailsOpen}
         onOpenChange={setDetailsOpen}
+      />
+
+      <DoctorPatientsDialog
+        doctor={selectedDoctor}
+        open={patientsOpen}
+        onOpenChange={setPatientsOpen}
       />
 
       <UpdateDoctorDialog

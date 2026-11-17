@@ -8,12 +8,14 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { login } from "@/features/auth/api/auth-api";
+import { resolvePostLoginPath } from "@/features/auth/lib/resolve-post-login-path";
 import { sanitizeNext } from "@/features/auth/lib/sanitize-next";
 import { loginSchema, type LoginFormValues } from "@/features/auth/model/login-schema";
 import { useSessionStore } from "@/features/auth/model/session-store";
 import { currentUserQuery } from "@/features/auth/queries/current-user";
 import { ApiRequestError } from "@/shared/lib/api/errors";
 import { getQueryClient } from "@/shared/lib/query/client";
+import { resetAppQueriesForAuthChange } from "@/shared/lib/query/reset-on-auth-change";
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
 import {
@@ -55,9 +57,14 @@ export function LoginForm() {
   const loginMutation = useMutation({
     mutationFn: login,
     onSuccess: (session) => {
+      resetAppQueriesForAuthChange();
       setSession(session);
       getQueryClient().setQueryData(currentUserQuery.queryKey, session.user);
-      router.replace(sanitizeNext(searchParams.get("next")));
+      const next = resolvePostLoginPath(
+        session.user,
+        sanitizeNext(searchParams.get("next")),
+      );
+      router.replace(next);
     },
     onError: (error) => {
       const message =

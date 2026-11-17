@@ -5,7 +5,6 @@ import { useEffect, type ReactNode } from "react";
 
 import { sanitizeNext } from "@/features/auth/lib/sanitize-next";
 import { siteConfig } from "@/shared/config/site";
-import { cn } from "@/shared/lib/utils";
 
 import { useSessionStore } from "../model/session-store";
 import { AuthLoading } from "./auth-loading";
@@ -36,13 +35,14 @@ export function AuthGuard({ children }: { children: ReactNode }) {
   const status = useSessionStore((state) => state.status);
   const isAuthenticated = isBootstrapped && status === "authenticated";
 
-  return (
-    <>
-      <AuthSessionRedirect />
-      {!isAuthenticated ? <AuthLoading /> : null}
-      <div className={cn(!isAuthenticated && "sr-only")} aria-hidden={!isAuthenticated}>
-        {children}
-      </div>
-    </>
-  );
+  if (!isAuthenticated) {
+    return (
+      <>
+        <AuthSessionRedirect />
+        <AuthLoading />
+      </>
+    );
+  }
+
+  return children;
 }

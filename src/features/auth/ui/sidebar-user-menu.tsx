@@ -7,7 +7,6 @@ import { ChevronsUpDown, LogOut } from "lucide-react";
 import { logout } from "@/features/auth/api/auth-api";
 import { useSessionStore } from "@/features/auth/model/session-store";
 import { siteConfig } from "@/shared/config/site";
-import { getQueryClient } from "@/shared/lib/query/client";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -42,7 +41,6 @@ export function SidebarUserMenu() {
     mutationFn: logout,
     onSettled: () => {
       clearSession();
-      getQueryClient().removeQueries({ queryKey: ["auth"] });
       router.replace(siteConfig.routes.login);
     },
   });

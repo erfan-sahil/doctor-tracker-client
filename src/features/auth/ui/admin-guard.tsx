@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, type ReactNode } from "react";
+import { useLayoutEffect, type ReactNode } from "react";
 
 import { siteConfig } from "@/shared/config/site";
 
@@ -13,7 +13,7 @@ export function AdminGuard({ children }: { children: ReactNode }) {
   const isBootstrapped = useSessionStore((state) => state.isBootstrapped);
   const isAdmin = useSessionStore((state) => state.user?.role === "admin");
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!isBootstrapped) {
       return;
     }

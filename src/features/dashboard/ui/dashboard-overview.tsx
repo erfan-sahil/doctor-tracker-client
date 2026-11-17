@@ -9,6 +9,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/shared/ui/card";
+import { DashboardPage } from "@/shared/ui/dashboard-page";
+import { PageHeader } from "@/shared/ui/page-header";
 
 const stats = [
   {
@@ -33,13 +35,11 @@ const stats = [
 
 export function DashboardOverview() {
   return (
-    <div className="flex flex-col gap-6">
-      <header className="flex flex-col gap-1">
-        <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
-        <p className="text-muted-foreground text-sm">
-          Clinic totals, patients per doctor, and activity over time.
-        </p>
-      </header>
+    <DashboardPage>
+      <PageHeader
+        title="Dashboard"
+        description="Clinic totals, patients per doctor, and activity over time."
+      />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {stats.map((stat) => {
@@ -95,11 +95,11 @@ export function DashboardOverview() {
           <CardDescription>New patients across the selected range.</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-3">
-          <div className="flex h-40 items-end gap-2">
+          <div className="flex h-32 items-end gap-1.5 sm:h-40 sm:gap-2">
             {Array.from({ length: 12 }, (_, index) => (
               <div
                 key={index}
-                className="bg-primary/20 flex-1 rounded-t-md"
+                className="bg-primary/20 min-w-0 flex-1 rounded-t-md"
                 style={{ height: "12%" }}
               />
             ))}
@@ -109,6 +109,6 @@ export function DashboardOverview() {
           </p>
         </CardContent>
       </Card>
-    </div>
+    </DashboardPage>
   );
 }

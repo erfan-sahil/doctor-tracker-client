@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 
-import { Card, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card";
+import { Card, CardDescription, CardHeader } from "@/shared/ui/card";
+import { DashboardPage } from "@/shared/ui/dashboard-page";
+import { PageHeader } from "@/shared/ui/page-header";
 import { Skeleton } from "@/shared/ui/skeleton";
 
 type PatientPageProps = PageProps<"/patients/[patientId]">;
@@ -18,23 +20,27 @@ export default function PatientPage({ params }: PatientPageProps) {
   return (
     <Suspense
       fallback={
-        <Card>
-          <CardHeader>
-            <Skeleton className="h-7 w-32" />
-            <Skeleton className="h-4 w-64" />
-          </CardHeader>
-        </Card>
+        <DashboardPage>
+          <Skeleton className="h-8 w-40" />
+          <Card>
+            <CardHeader>
+              <Skeleton className="h-4 w-full max-w-md" />
+            </CardHeader>
+          </Card>
+        </DashboardPage>
       }
     >
       {params.then(({ patientId }) => (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-2xl">Patient</CardTitle>
-            <CardDescription>
-              Patient {patientId} will load from the patients feature.
-            </CardDescription>
-          </CardHeader>
-        </Card>
+        <DashboardPage>
+          <PageHeader title="Patient" description={`Record for patient ${patientId}.`} />
+          <Card>
+            <CardHeader>
+              <CardDescription>
+                Patient {patientId} will load from the patients feature.
+              </CardDescription>
+            </CardHeader>
+          </Card>
+        </DashboardPage>
       ))}
     </Suspense>
   );

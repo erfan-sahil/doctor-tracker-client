@@ -45,8 +45,8 @@ export function DashboardShell({ children }: { children: ReactNode }) {
   return (
     <SidebarProvider>
       <Sidebar collapsible="icon">
-        <SidebarHeader>
-          <SidebarMenu>
+        <SidebarHeader className="gap-2 pb-0">
+          <SidebarMenu className="gap-0">
             <SidebarMenuItem>
               <SidebarMenuButton size="lg" asChild tooltip={siteConfig.name}>
                 <Link href={siteConfig.routes.dashboard}>
@@ -64,9 +64,10 @@ export function DashboardShell({ children }: { children: ReactNode }) {
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarHeader>
+        <Separator className="bg-sidebar-border mx-3 w-auto" />
         <SidebarContent>
           <SidebarGroup>
-            <SidebarGroupLabel>Clinic</SidebarGroupLabel>
+            <SidebarGroupLabel className="px-2">Clinic</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 {navItems.map((item) => {
@@ -88,21 +89,23 @@ export function DashboardShell({ children }: { children: ReactNode }) {
             </SidebarGroupContent>
           </SidebarGroup>
         </SidebarContent>
-        <SidebarFooter>
-          <p className="text-muted-foreground px-2 text-xs group-data-[collapsible=icon]:hidden">
+        <SidebarFooter className="border-sidebar-border border-t pt-2">
+          <p className="text-muted-foreground px-2 text-xs leading-relaxed group-data-[collapsible=icon]:hidden">
             Doctors, patients, and clinic activity.
           </p>
         </SidebarFooter>
         <SidebarRail />
       </Sidebar>
-      <SidebarInset>
-        <header className="flex h-14 shrink-0 items-center gap-2 border-b px-4">
-          <SidebarTrigger />
-          <Separator orientation="vertical" className="h-4" />
-          <span className="flex-1 text-sm font-medium">{siteConfig.name}</span>
+      <SidebarInset className="min-h-svh min-w-0">
+        <header className="bg-background/95 supports-backdrop-filter:backdrop-blur-sm sticky top-0 z-10 flex min-h-14 shrink-0 items-center gap-2 border-b px-3 sm:gap-3 sm:px-4 md:px-6">
+          <SidebarTrigger className="shrink-0" />
+          <Separator orientation="vertical" className="hidden h-4 sm:block" />
+          <span className="min-w-0 flex-1 truncate text-sm font-medium sm:text-base">
+            {siteConfig.name}
+          </span>
           <ThemeToggle />
         </header>
-        <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col p-4 md:p-6">
+        <div className="mx-auto flex w-full min-w-0 max-w-6xl flex-1 flex-col p-3 sm:p-4 md:p-6 md:pb-8">
           {children}
         </div>
       </SidebarInset>

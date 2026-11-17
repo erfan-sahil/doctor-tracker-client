@@ -12,14 +12,14 @@ import {
 
 export default function NotFound() {
   return (
-    <main className="flex flex-1 items-center justify-center p-6">
-      <Card className="w-full max-w-md text-center">
+    <main className="flex flex-1 items-center justify-center p-4 sm:p-6">
+      <Card className="w-full max-w-md min-w-0 text-center">
         <CardHeader>
           <CardTitle className="text-2xl">Page not found</CardTitle>
           <CardDescription>That page is not part of {siteConfig.name}.</CardDescription>
         </CardHeader>
-        <CardFooter className="justify-center">
-          <Button asChild>
+        <CardFooter className="justify-center px-4 sm:px-6">
+          <Button asChild className="w-full sm:w-auto">
             <Link href={siteConfig.routes.home}>Back home</Link>
           </Button>
         </CardFooter>

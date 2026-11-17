@@ -119,7 +119,12 @@ export function UpdateDoctorDialog({ doctor, open, onOpenChange }: UpdateDoctorD
                   <FormItem>
                     <FormLabel>Name</FormLabel>
                     <FormControl>
-                      <Input autoComplete="name" disabled={pending} {...field} />
+                      <Input
+                        autoComplete="name"
+                        placeholder="e.g. Dr. Jane Smith"
+                        disabled={pending}
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

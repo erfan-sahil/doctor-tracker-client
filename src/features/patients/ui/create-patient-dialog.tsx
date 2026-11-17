@@ -138,7 +138,12 @@ export function CreatePatientDialog({ open, onOpenChange, doctors }: CreatePatie
                     <FormItem>
                       <FormLabel>Name</FormLabel>
                       <FormControl>
-                        <Input autoComplete="name" disabled={pending} {...field} />
+                        <Input
+                          autoComplete="name"
+                          placeholder="e.g. John Doe"
+                          disabled={pending}
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -159,6 +164,7 @@ export function CreatePatientDialog({ open, onOpenChange, doctors }: CreatePatie
                             doctors={doctors}
                             disabled={pending}
                             placeholder="Select doctor"
+                            variant="rich"
                           />
                         </FormControl>
                         <FormMessage />

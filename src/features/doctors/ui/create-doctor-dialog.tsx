@@ -141,6 +141,7 @@ export function CreateDoctorDialog({ open, onOpenChange }: CreateDoctorDialogPro
                     <FormControl>
                       <Input
                         autoComplete="name"
+                        placeholder="e.g. Dr. Jane Smith"
                         disabled={pending}
                         {...field}
                       />
@@ -161,6 +162,7 @@ export function CreateDoctorDialog({ open, onOpenChange }: CreateDoctorDialogPro
                         type="email"
                         autoComplete="email"
                         inputMode="email"
+                        placeholder="doctor@clinic.com"
                         disabled={pending}
                         {...field}
                       />
@@ -179,6 +181,7 @@ export function CreateDoctorDialog({ open, onOpenChange }: CreateDoctorDialogPro
                     <FormControl>
                       <PasswordInput
                         autoComplete="new-password"
+                        placeholder="At least 8 characters"
                         disabled={pending}
                         className={fieldPasswordClassName}
                         {...field}

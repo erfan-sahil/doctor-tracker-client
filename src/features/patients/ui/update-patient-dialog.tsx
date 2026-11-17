@@ -128,7 +128,12 @@ export function UpdatePatientDialog({
                   <FormItem>
                     <FormLabel>Name</FormLabel>
                     <FormControl>
-                      <Input autoComplete="name" disabled={pending} {...field} />
+                      <Input
+                        autoComplete="name"
+                        placeholder="e.g. John Doe"
+                        disabled={pending}
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -149,6 +154,7 @@ export function UpdatePatientDialog({
                           doctors={doctors}
                           disabled={pending}
                           placeholder="Select doctor"
+                          variant="rich"
                         />
                       </FormControl>
                       <FormMessage />

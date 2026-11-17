@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { ReactNode } from "react";
+import { useMemo, type ReactNode } from "react";
 import { LayoutDashboard, Stethoscope, Users } from "lucide-react";
 
 import { useSessionStore } from "@/features/auth/model/session-store";
@@ -28,7 +28,12 @@ import {
 
 const navItems = [
   { href: siteConfig.routes.overview, label: "Overview", icon: LayoutDashboard },
-  { href: siteConfig.routes.doctors, label: "Doctors", icon: Stethoscope },
+  {
+    href: siteConfig.routes.doctors,
+    label: "Doctors",
+    icon: Stethoscope,
+    adminOnly: true,
+  },
   { href: siteConfig.routes.patients, label: "Patients", icon: Users },
 ] as const;
 
@@ -44,6 +49,10 @@ export function DashboardShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const isAdmin = useSessionStore((state) => state.user?.role === "admin");
   const headerTitle = isAdmin ? "Admin Dashboard" : "Doctor Dashboard";
+  const visibleNavItems = useMemo(
+    () => navItems.filter((item) => !("adminOnly" in item && item.adminOnly) || isAdmin),
+    [isAdmin],
+  );
 
   return (
     <SidebarProvider>
@@ -72,7 +81,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
           <SidebarGroup>
             <SidebarGroupContent>
               <SidebarMenu className="gap-1">
-                {navItems.map((item) => {
+                {visibleNavItems.map((item) => {
                   const active = isActive(pathname, item.href);
                   const Icon = item.icon;
 

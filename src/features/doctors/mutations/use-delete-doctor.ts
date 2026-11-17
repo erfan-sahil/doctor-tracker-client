@@ -2,6 +2,7 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
+import { overviewKeys } from "@/features/overview/queries/keys";
 import { deleteDoctor } from "@/features/doctors/api/doctors-api";
 import { doctorKeys } from "@/features/doctors/queries/keys";
 
@@ -14,6 +15,7 @@ export function useDeleteDoctorMutation() {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: doctorKeys.lists() }),
         queryClient.invalidateQueries({ queryKey: doctorKeys.filterOptions() }),
+        queryClient.invalidateQueries({ queryKey: overviewKeys.all }),
       ]);
     },
   });

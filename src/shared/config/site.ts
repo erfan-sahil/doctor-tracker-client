@@ -4,7 +4,7 @@ export const siteConfig = {
   routes: {
     home: "/",
     login: "/login",
-    dashboard: "/dashboard",
+    overview: "/overview",
     doctors: "/doctors",
     patients: "/patients",
   },

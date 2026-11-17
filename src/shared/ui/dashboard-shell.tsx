@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import { LayoutDashboard, Stethoscope, Users } from "lucide-react";
 
+import { useSessionStore } from "@/features/auth/model/session-store";
 import { SidebarUserMenu } from "@/features/auth/ui/sidebar-user-menu";
 import { siteConfig } from "@/shared/config/site";
 import { Separator } from "@/shared/ui/separator";
@@ -26,13 +27,13 @@ import {
 } from "@/shared/ui/sidebar";
 
 const navItems = [
-  { href: siteConfig.routes.dashboard, label: "Dashboard", icon: LayoutDashboard },
+  { href: siteConfig.routes.overview, label: "Overview", icon: LayoutDashboard },
   { href: siteConfig.routes.doctors, label: "Doctors", icon: Stethoscope },
   { href: siteConfig.routes.patients, label: "Patients", icon: Users },
 ] as const;
 
 function isActive(pathname: string, href: string) {
-  if (href === siteConfig.routes.dashboard) {
+  if (href === siteConfig.routes.overview) {
     return pathname === href;
   }
 
@@ -41,6 +42,8 @@ function isActive(pathname: string, href: string) {
 
 export function DashboardShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const isAdmin = useSessionStore((state) => state.user?.role === "admin");
+  const headerTitle = isAdmin ? "Admin Dashboard" : "Doctor Dashboard";
 
   return (
     <SidebarProvider>
@@ -54,7 +57,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                 tooltip={siteConfig.name}
                 className="hover:bg-transparent hover:text-sidebar-foreground active:bg-transparent active:text-sidebar-foreground data-active:bg-transparent data-active:text-sidebar-foreground data-active:font-semibold"
               >
-                <Link href={siteConfig.routes.dashboard}>
+                <Link href={siteConfig.routes.overview}>
                   <span className="bg-sidebar-primary text-sidebar-primary-foreground flex size-8 items-center justify-center rounded-lg text-xs font-semibold">
                     DT
                   </span>
@@ -103,7 +106,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
           <SidebarTrigger className="shrink-0" />
           <Separator orientation="vertical" className="hidden h-4 sm:block" />
           <span className="min-w-0 flex-1 truncate text-sm font-medium sm:text-base">
-            {siteConfig.name}
+            {headerTitle}
           </span>
           <ThemeToggle />
         </header>

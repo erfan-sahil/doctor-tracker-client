@@ -10,8 +10,8 @@ import { Input } from "@/shared/ui/input";
 
 export const authFieldInputClassName =
   [
-    "h-10 rounded-2xl border-auth-input-border bg-auth-input px-4 text-base leading-normal font-medium tracking-normal text-foreground antialiased md:text-base",
-    "placeholder:font-normal placeholder:text-muted-foreground/55 dark:placeholder:text-muted-foreground/65",
+    "h-10 rounded-2xl border-auth-input-border bg-auth-input px-3.5 text-sm leading-5 font-normal tracking-normal text-foreground antialiased",
+    "placeholder:text-sm placeholder:font-normal placeholder:text-muted-foreground/60 dark:placeholder:text-muted-foreground/65",
     "focus-visible:border-ring focus-visible:bg-auth-input-focus focus-visible:ring-ring/25",
     "disabled:opacity-60 dark:shadow-none",
   ].join(" ");

@@ -103,7 +103,9 @@ export function LoginForm() {
       <form onSubmit={onSubmit} noValidate>
         <CardContent className={cn(formBodyClassName, "pb-0")}>
           <div className={formFieldClassName}>
-            <Label htmlFor="email">Email</Label>
+            <Label className="text-muted-foreground text-xs font-normal" htmlFor="email">
+              Email
+            </Label>
             <Input
               id="email"
               type="email"
@@ -123,7 +125,9 @@ export function LoginForm() {
           </div>
 
           <div className={formFieldClassName}>
-            <Label htmlFor="password">Password</Label>
+            <Label className="text-muted-foreground text-xs font-normal" htmlFor="password">
+              Password
+            </Label>
             <PasswordInput
               id="password"
               autoComplete="current-password"

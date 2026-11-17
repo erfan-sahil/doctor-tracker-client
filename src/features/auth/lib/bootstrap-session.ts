@@ -1,15 +1,32 @@
-import { setAccessToken } from "@/shared/lib/api/token";
+import { getRefreshedAccessToken } from "@/shared/lib/api/client";
+import { isUnauthorizedError } from "@/shared/lib/api/errors";
 
-import { getCurrentUser, refreshSession } from "../api/auth-api";
+import { getCurrentUser } from "../api/auth-api";
 import { useSessionStore } from "../model/session-store";
 
-export async function bootstrapSession(): Promise<void> {
+let bootstrapPromise: Promise<void> | null = null;
+
+async function runBootstrapSession(): Promise<void> {
   try {
-    const { accessToken } = await refreshSession();
-    setAccessToken(accessToken);
+    const accessToken = await getRefreshedAccessToken();
     const user = await getCurrentUser();
     useSessionStore.getState().setSession({ user, accessToken });
-  } catch {
-    useSessionStore.getState().clearSession();
+  } catch (error) {
+    if (isUnauthorizedError(error)) {
+      useSessionStore.getState().clearSession();
+    }
   }
+}
+
+export function bootstrapSession(): Promise<void> {
+  if (bootstrapPromise) {
+    return bootstrapPromise;
+  }
+
+  bootstrapPromise = runBootstrapSession().catch((error) => {
+    bootstrapPromise = null;
+    throw error;
+  });
+
+  return bootstrapPromise;
 }

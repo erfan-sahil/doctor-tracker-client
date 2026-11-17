@@ -1,14 +1,19 @@
-import { apiClient, apiData } from "@/shared/lib/api/client";
+import {
+  apiClient,
+  apiData,
+  credentialsClient,
+  getRefreshedAccessToken,
+} from "@/shared/lib/api/client";
 import type { ApiSuccess } from "@/shared/types/api";
 
 import type { LoginInput, LoginResult, PublicUser, RefreshResult } from "../model/types";
 
 export function login(input: LoginInput): Promise<LoginResult> {
-  return apiData(apiClient.post<ApiSuccess<LoginResult>>("/auth/login", input));
+  return apiData(credentialsClient.post<ApiSuccess<LoginResult>>("/auth/login", input));
 }
 
 export function refreshSession(): Promise<RefreshResult> {
-  return apiData(apiClient.post<ApiSuccess<RefreshResult>>("/auth/refresh"));
+  return getRefreshedAccessToken().then((accessToken) => ({ accessToken }));
 }
 
 export function getCurrentUser(): Promise<PublicUser> {
@@ -16,5 +21,5 @@ export function getCurrentUser(): Promise<PublicUser> {
 }
 
 export function logout(): Promise<null> {
-  return apiData(apiClient.post<ApiSuccess<null>>("/auth/logout"));
+  return apiData(credentialsClient.post<ApiSuccess<null>>("/auth/logout"));
 }

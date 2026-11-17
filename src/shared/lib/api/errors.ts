@@ -21,6 +21,10 @@ function readMessage(data: unknown): string | null {
   return typeof message === "string" && message.length > 0 ? message : null;
 }
 
+export function isUnauthorizedError(error: unknown): boolean {
+  return toApiRequestError(error).status === 401;
+}
+
 export function toApiRequestError(error: unknown): ApiRequestError {
   if (error instanceof ApiRequestError) {
     return error;

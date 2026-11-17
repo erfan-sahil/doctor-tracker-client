@@ -1,6 +1,8 @@
 import { create } from "zustand";
 
+import { registerAuthSessionInvalidation } from "@/shared/lib/api/session-invalidation";
 import { setAccessToken, subscribeAccessToken } from "@/shared/lib/api/token";
+import { getQueryClient } from "@/shared/lib/query/client";
 
 import type { PublicUser, Session } from "./types";
 
@@ -37,12 +39,10 @@ export const useSessionStore = create<SessionState>((set) => ({
 subscribeAccessToken((accessToken) => {
   if (accessToken) {
     useSessionStore.setState({ accessToken });
-    return;
   }
+});
 
-  useSessionStore.setState({
-    user: null,
-    accessToken: null,
-    status: "anonymous",
-  });
+registerAuthSessionInvalidation(() => {
+  useSessionStore.getState().clearSession();
+  getQueryClient().removeQueries({ queryKey: ["auth"] });
 });

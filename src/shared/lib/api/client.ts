@@ -7,14 +7,16 @@ import axios, {
 import { env } from "@/shared/config/env";
 import type { ApiSuccess } from "@/shared/types/api";
 
-import { toApiRequestError } from "./errors";
-import { clearAccessToken, getAccessToken, setAccessToken } from "./token";
+import { isUnauthorizedError, toApiRequestError } from "./errors";
+import { notifyAuthSessionInvalidated } from "./session-invalidation";
+import { getAccessToken, setAccessToken } from "./token";
 
 type RetryConfig = InternalAxiosRequestConfig & {
   _retry?: boolean;
 };
 
-const refreshClient = axios.create({
+/** Cookie-based auth (login, refresh, logout). No Bearer header or 401 refresh loop. */
+export const credentialsClient = axios.create({
   baseURL: env.apiUrl,
   withCredentials: true,
 });
@@ -24,7 +26,7 @@ export const apiClient = axios.create({
   withCredentials: true,
 });
 
-let refreshPromise: Promise<string | null> | null = null;
+let refreshInFlight: Promise<string> | null = null;
 
 function isAuthEndpoint(url: string | undefined): boolean {
   if (!url) {
@@ -38,21 +40,39 @@ function isAuthEndpoint(url: string | undefined): boolean {
   );
 }
 
-async function refreshAccessToken(): Promise<string | null> {
-  const response =
-    await refreshClient.post<ApiSuccess<{ accessToken: string }>>("/auth/refresh");
-  const token = response.data.data.accessToken;
-  setAccessToken(token);
-  return token;
+async function requestNewAccessToken(): Promise<string> {
+  try {
+    const response = await credentialsClient.post<ApiSuccess<{ accessToken: string }>>(
+      "/auth/refresh",
+    );
+    const token = response.data.data.accessToken;
+    setAccessToken(token);
+    return token;
+  } catch (error) {
+    if (isUnauthorizedError(error)) {
+      notifyAuthSessionInvalidated();
+    }
+
+    throw toApiRequestError(error);
+  }
 }
 
-function refreshOnce(): Promise<string | null> {
-  refreshPromise ??= refreshAccessToken().finally(() => {
-    refreshPromise = null;
+/**
+ * Single in-flight refresh for the whole app (bootstrap + 401 interceptor).
+ * Avoids parallel /auth/refresh calls, which would rotate/revoke refresh sessions.
+ */
+export function getRefreshedAccessToken(): Promise<string> {
+  refreshInFlight ??= requestNewAccessToken().finally(() => {
+    refreshInFlight = null;
   });
 
-  return refreshPromise;
+  return refreshInFlight;
 }
+
+credentialsClient.interceptors.response.use(
+  (response) => response,
+  (error: AxiosError) => Promise.reject(toApiRequestError(error)),
+);
 
 apiClient.interceptors.request.use((config) => {
   const token = getAccessToken();
@@ -81,17 +101,10 @@ apiClient.interceptors.response.use(
     original._retry = true;
 
     try {
-      const token = await refreshOnce();
-
-      if (!token) {
-        clearAccessToken();
-        return Promise.reject(toApiRequestError(error));
-      }
-
+      const token = await getRefreshedAccessToken();
       original.headers.set("Authorization", `Bearer ${token}`);
       return apiClient(original);
     } catch (refreshError) {
-      clearAccessToken();
       return Promise.reject(toApiRequestError(refreshError));
     }
   },

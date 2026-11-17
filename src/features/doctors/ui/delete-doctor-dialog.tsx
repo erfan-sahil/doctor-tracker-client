@@ -1,6 +1,6 @@
 "use client";
 
-import { Loader2 } from "lucide-react";
+import { Loader2, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 import { useDeleteDoctorMutation } from "@/features/doctors/mutations/use-delete-doctor";
@@ -9,15 +9,13 @@ import {
   doctorDeleteDialogHeaderClassName,
   doctorDialogFooterClassName,
 } from "@/features/doctors/ui/doctor-dialog-styles";
+import { DoctorFormDialogHeader } from "@/features/doctors/ui/doctor-form-dialog-header";
 import { ApiRequestError } from "@/shared/lib/api/errors";
 import { Button } from "@/shared/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
-  DialogHeader,
-  DialogTitle,
 } from "@/shared/ui/dialog";
 
 type DeleteDoctorDialogProps = {
@@ -65,16 +63,19 @@ export function DeleteDoctorDialog({ doctor, open, onOpenChange }: DeleteDoctorD
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="gap-0 overflow-hidden p-0 sm:max-w-md">
-        <DialogHeader className={doctorDeleteDialogHeaderClassName}>
-          <p className="text-destructive text-xs font-semibold tracking-[0.14em] uppercase">
-            Remove doctor
-          </p>
-          <DialogTitle className="text-lg font-semibold tracking-tight">Delete doctor</DialogTitle>
-          <DialogDescription className="text-muted-foreground text-sm leading-relaxed">
-            This removes <span className="text-foreground font-medium">{doctor.doctor.name}</span> and
-            their login account. Doctors with assigned patients cannot be deleted.
-          </DialogDescription>
-        </DialogHeader>
+        <DoctorFormDialogHeader
+          icon={Trash2}
+          variant="destructive"
+          eyebrow="Remove doctor"
+          title="Delete doctor"
+          description={
+            <>
+              This removes <span className="text-foreground font-medium">{doctor.doctor.name}</span>{" "}
+              and their login account. Doctors with assigned patients cannot be deleted.
+            </>
+          }
+          headerClassName={doctorDeleteDialogHeaderClassName}
+        />
 
         <div className="px-6 py-5">
           {error ? (

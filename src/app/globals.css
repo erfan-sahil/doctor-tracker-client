@@ -42,6 +42,7 @@
   --color-auth-input: var(--auth-input);
   --color-auth-input-border: var(--auth-input-border);
   --color-auth-input-focus: var(--auth-input-focus);
+  --color-table-header: var(--table-header);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -87,6 +88,7 @@
   --auth-input: oklch(0.995 0.002 264);
   --auth-input-border: oklch(0.9 0.008 264);
   --auth-input-focus: oklch(1 0 0);
+  --table-header: color-mix(in oklch, var(--primary), var(--background) 91%);
 }
 
 .dark {
@@ -124,6 +126,7 @@
   --auth-input: oklch(0.24 0.006 264);
   --auth-input-border: oklch(1 0 0 / 16%);
   --auth-input-focus: oklch(0.255 0.006 264);
+  --table-header: color-mix(in oklch, var(--card), var(--primary) 11%);
 }
 
 @layer base {

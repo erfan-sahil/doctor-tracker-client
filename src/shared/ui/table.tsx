@@ -23,11 +23,9 @@ function TableHeader({ className, ...props }: React.ComponentProps<"thead">) {
     <thead
       data-slot="table-header"
       className={cn(
-        "[&_tr]:border-primary/18 [&_tr]:border-b",
-        "[&_tr]:bg-[color-mix(in_oklch,var(--primary),var(--background)_91%)]",
-        "dark:[&_tr]:border-primary/15 dark:[&_tr]:bg-[color-mix(in_oklch,var(--card),var(--primary)_11%)]",
-        "[&_tr]:hover:bg-[color-mix(in_oklch,var(--primary),var(--background)_91%)]",
-        "dark:[&_tr]:hover:bg-[color-mix(in_oklch,var(--card),var(--primary)_11%)]",
+        "[&_tr]:border-primary/18 [&_tr]:border-b [&_tr]:bg-table-header",
+        "dark:[&_tr]:border-primary/15",
+        "[&_tr]:hover:bg-table-header",
         className,
       )}
       {...props}
@@ -64,12 +62,9 @@ function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
       data-slot="table-row"
       className={cn(
         "group/table-row border-b transition-colors",
-        "hover:bg-[color-mix(in_oklch,var(--secondary),var(--background)_94%)]",
-        "dark:hover:bg-[color-mix(in_oklch,var(--secondary),var(--card)_90%)]",
-        "has-aria-expanded:bg-[color-mix(in_oklch,var(--secondary),var(--background)_94%)]",
-        "dark:has-aria-expanded:bg-[color-mix(in_oklch,var(--secondary),var(--card)_90%)]",
-        "data-[state=selected]:bg-[color-mix(in_oklch,var(--secondary),var(--background)_94%)]",
-        "dark:data-[state=selected]:bg-[color-mix(in_oklch,var(--secondary),var(--card)_90%)]",
+        "hover:bg-accent/30 hover:text-foreground",
+        "has-aria-expanded:bg-accent has-aria-expanded:text-accent-foreground",
+        "data-[state=selected]:bg-accent data-[state=selected]:text-accent-foreground",
         className
       )}
       {...props}

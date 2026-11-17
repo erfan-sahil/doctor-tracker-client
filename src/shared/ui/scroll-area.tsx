@@ -63,7 +63,7 @@ function ScrollBar({
   )
 }
 
-/** Modal form body with shadcn ScrollArea + ScrollBar (explicit height for Radix). */
+/** Modal form body: grows with content; ScrollBar appears only when content exceeds max height. */
 function DialogScrollArea({
   className,
   children,
@@ -71,8 +71,12 @@ function DialogScrollArea({
 }: Omit<ScrollAreaProps, "type">) {
   return (
     <ScrollArea
-      type="always"
-      className={cn("h-[min(calc(90dvh-12rem),32rem)] w-full", className)}
+      type="auto"
+      className={cn(
+        "h-auto w-full min-h-0 max-h-[min(calc(90dvh-12rem),32rem)]",
+        className,
+      )}
+      viewportClassName="max-h-[min(calc(90dvh-12rem),32rem)]"
       {...props}
     >
       {children}

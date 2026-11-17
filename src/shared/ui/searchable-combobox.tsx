@@ -29,6 +29,19 @@ type SearchableComboboxProps = {
   className?: string;
 };
 
+/** Active option stays deep; hover highlight clears when the pointer leaves (cmdk keeps data-selected). */
+const filterCommandItemClassName = cn(
+  "data-selected:!bg-transparent data-selected:text-foreground",
+  "hover:bg-accent/35 hover:text-accent-foreground",
+  "data-selected:hover:!bg-accent/35 data-selected:hover:text-accent-foreground",
+  "data-selected:focus-visible:!bg-accent/35 data-selected:focus-visible:text-accent-foreground",
+  "data-[active-value=true]:!bg-accent data-[active-value=true]:text-accent-foreground",
+  "data-[active-value=true]:hover:!bg-accent data-[active-value=true]:hover:text-accent-foreground",
+  "data-[active-value=true]:data-selected:!bg-accent data-[active-value=true]:data-selected:text-accent-foreground",
+  "data-[active-value=true]:data-selected:hover:!bg-accent",
+  "data-[active-value=true]:data-selected:focus-visible:!bg-accent",
+);
+
 export function SearchableCombobox({
   id,
   value,
@@ -92,7 +105,9 @@ export function SearchableCombobox({
           disabled={disabled}
           className={cn(
             "h-8 w-full justify-between font-normal",
-            !value && "text-muted-foreground",
+            value
+              ? "border-primary/30 bg-accent text-accent-foreground hover:!bg-accent hover:!text-accent-foreground aria-expanded:!bg-accent aria-expanded:!text-accent-foreground"
+              : "text-muted-foreground hover:!bg-accent/35 hover:!text-foreground aria-expanded:!bg-accent/35",
             className,
           )}
         >
@@ -116,6 +131,8 @@ export function SearchableCombobox({
               {allLabel ? (
                 <CommandItem
                   value={allLabel}
+                  data-active-value={value ? undefined : true}
+                  className={filterCommandItemClassName}
                   onSelect={() => {
                     onValueChange("");
                     setOpen(false);
@@ -132,6 +149,8 @@ export function SearchableCombobox({
               {canCreateCustom ? (
                 <CommandItem
                   value={normalizedSearch}
+                  data-active-value={value === normalizedSearch ? true : undefined}
+                  className={filterCommandItemClassName}
                   onSelect={() => {
                     onValueChange(normalizedSearch);
                     setOpen(false);
@@ -152,6 +171,8 @@ export function SearchableCombobox({
                 <CommandItem
                   key={option}
                   value={option}
+                  data-active-value={value === option ? true : undefined}
+                  className={filterCommandItemClassName}
                   onSelect={() => {
                     onValueChange(option);
                     setOpen(false);

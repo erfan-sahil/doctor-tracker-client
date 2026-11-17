@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
+import { Loader2, UserPen } from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
@@ -17,15 +17,13 @@ import {
   doctorDialogFooterClassName,
   doctorDialogHeaderClassName,
 } from "@/features/doctors/ui/doctor-dialog-styles";
+import { DoctorFormDialogHeader } from "@/features/doctors/ui/doctor-form-dialog-header";
 import { ApiRequestError } from "@/shared/lib/api/errors";
 import { Button } from "@/shared/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
-  DialogHeader,
-  DialogTitle,
 } from "@/shared/ui/dialog";
 import {
   Form,
@@ -103,15 +101,13 @@ export function UpdateDoctorDialog({ doctor, open, onOpenChange }: UpdateDoctorD
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="gap-0 overflow-hidden p-0 sm:max-w-lg">
-        <DialogHeader className={doctorDialogHeaderClassName}>
-          <p className="text-primary text-xs font-semibold tracking-[0.14em] uppercase">
-            Update doctor
-          </p>
-          <DialogTitle className="text-lg font-semibold tracking-tight">{doctor.doctor.name}</DialogTitle>
-          <DialogDescription className="text-muted-foreground text-sm">
-            Change roster details. Login email cannot be changed here.
-          </DialogDescription>
-        </DialogHeader>
+        <DoctorFormDialogHeader
+          icon={UserPen}
+          eyebrow="Update doctor"
+          title={doctor.doctor.name}
+          description="Change roster details. Login email cannot be changed here."
+          headerClassName={doctorDialogHeaderClassName}
+        />
 
         <Form {...form}>
           <form onSubmit={onSubmit} noValidate>

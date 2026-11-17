@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
+import { Loader2, UserPlus } from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
@@ -11,16 +11,18 @@ import {
   createDoctorSchema,
   type CreateDoctorFormValues,
 } from "@/features/doctors/model/create-doctor-schema";
+import {
+  doctorDialogFooterClassName,
+  doctorDialogHeaderClassName,
+} from "@/features/doctors/ui/doctor-dialog-styles";
+import { DoctorFormDialogHeader } from "@/features/doctors/ui/doctor-form-dialog-header";
 import { ApiRequestError } from "@/shared/lib/api/errors";
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
-  DialogHeader,
-  DialogTitle,
 } from "@/shared/ui/dialog";
 import {
   Form,
@@ -47,16 +49,7 @@ const defaultValues: CreateDoctorFormValues = {
   hospital: "",
 };
 
-const dialogHeaderClassName = cn(
-  "gap-2 border-b border-primary/22 px-6 py-5 text-left",
-  "bg-[color-mix(in_oklch,var(--primary),var(--background)_86%)]",
-  "dark:border-primary/20 dark:bg-[color-mix(in_oklch,var(--card),var(--primary)_9%)]",
-);
-
 const dialogBodyClassName = "flex flex-col gap-5 px-6 py-5 pr-3";
-
-const dialogFooterClassName =
-  "mx-0 mb-0 gap-3 border-t bg-muted/50 px-6 py-4 sm:flex-row sm:justify-end";
 
 const fieldPasswordClassName =
   "h-8 rounded-lg border-input bg-transparent px-2.5 py-1 pr-11 text-sm shadow-none md:text-sm";
@@ -121,22 +114,21 @@ export function CreateDoctorDialog({ open, onOpenChange }: CreateDoctorDialogPro
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="!flex max-h-[90dvh] flex-col gap-0 overflow-hidden p-0 sm:max-w-lg">
-        <DialogHeader className={cn(dialogHeaderClassName, "shrink-0")}>
-          <p className="text-primary text-xs font-semibold tracking-[0.14em] uppercase">
-            New doctor
-          </p>
-          <DialogTitle className="text-lg font-semibold tracking-tight">Add doctor</DialogTitle>
-          <DialogDescription className="text-muted-foreground text-sm leading-relaxed">
-            Create a doctor account with login credentials for the clinic roster.
-          </DialogDescription>
-        </DialogHeader>
+      <DialogContent className="!flex h-fit max-h-[90dvh] flex-col gap-0 overflow-hidden p-0 sm:max-w-lg">
+        <DoctorFormDialogHeader
+          icon={UserPlus}
+          eyebrow="New doctor"
+          title="Add doctor"
+          description="Create a doctor account with login credentials for the clinic roster."
+          headerClassName={doctorDialogHeaderClassName}
+          className="shrink-0"
+        />
 
         <Form {...form}>
           <form
             onSubmit={onSubmit}
             noValidate
-            className="flex min-h-0 flex-1 flex-col overflow-hidden"
+            className="flex min-h-0 flex-col overflow-hidden"
           >
             <DialogScrollArea>
               <div className={dialogBodyClassName}>
@@ -250,7 +242,7 @@ export function CreateDoctorDialog({ open, onOpenChange }: CreateDoctorDialogPro
 
             <DialogFooter
               showCloseButton={false}
-              className={cn(dialogFooterClassName, "shrink-0")}
+              className={cn(doctorDialogFooterClassName, "shrink-0")}
             >
               <Button
                 type="button"

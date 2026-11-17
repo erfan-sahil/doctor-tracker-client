@@ -27,5 +27,4 @@ export const doctorDeleteDialogHeaderClassName = cn(
   "dark:border-destructive/12 dark:bg-[color-mix(in_oklch,var(--card),var(--destructive)_5%)]",
 );
 
-export const doctorDialogFooterClassName =
-  "mx-0 mb-0 gap-3 border-t border-border bg-muted/40 px-6 py-4 dark:bg-white/[0.04] sm:flex-row sm:justify-end [&_[data-slot=button]]:cursor-pointer";
+export { directoryDialogFooterClassName as doctorDialogFooterClassName } from "@/shared/ui/directory-dialog-footer-styles";

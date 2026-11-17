@@ -9,6 +9,7 @@ import { LayoutDashboard, Stethoscope, Users } from "lucide-react";
 import { useSessionStore } from "@/features/auth/model/session-store";
 import { SidebarUserMenu } from "@/features/auth/ui/sidebar-user-menu";
 import { siteConfig } from "@/shared/config/site";
+import { BrandWordmark } from "@/shared/ui/brand-wordmark";
 import { Separator } from "@/shared/ui/separator";
 import { ThemeToggle } from "@/shared/ui/theme-toggle";
 import {
@@ -67,7 +68,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                 tooltip={siteConfig.name}
                 className="hover:bg-transparent hover:text-sidebar-foreground active:bg-transparent active:text-sidebar-foreground data-active:bg-transparent data-active:text-sidebar-foreground data-active:font-semibold"
               >
-                <Link href={siteConfig.routes.overview}>
+                <Link href={siteConfig.routes.overview} aria-label={siteConfig.name}>
                   <Image
                     src={siteConfig.brandIcon}
                     alt=""
@@ -76,7 +77,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                     className="size-8 shrink-0 rounded-lg object-contain"
                     priority
                   />
-                  <span className="truncate font-semibold">{siteConfig.name}</span>
+                  <BrandWordmark />
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>

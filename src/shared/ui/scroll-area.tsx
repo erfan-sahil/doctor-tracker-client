@@ -63,6 +63,26 @@ function ScrollBar({
   )
 }
 
+/** Wide data tables: horizontal scroll with shadcn scrollbar (touch-friendly on small screens). */
+function TableScrollArea({
+  className,
+  viewportClassName,
+  children,
+  ...props
+}: ScrollAreaProps) {
+  return (
+    <ScrollArea
+      type="scroll"
+      className={cn("relative w-full", className)}
+      viewportClassName={cn("w-full max-w-full overscroll-x-contain", viewportClassName)}
+      {...props}
+    >
+      {children}
+      <ScrollBar orientation="horizontal" className="data-horizontal:h-3 sm:data-horizontal:h-2.5" />
+    </ScrollArea>
+  )
+}
+
 /** Modal form body: grows with content; ScrollBar appears only when content exceeds max height. */
 function DialogScrollArea({
   className,
@@ -84,4 +104,4 @@ function DialogScrollArea({
   )
 }
 
-export { ScrollArea, ScrollBar, DialogScrollArea }
+export { ScrollArea, ScrollBar, DialogScrollArea, TableScrollArea }

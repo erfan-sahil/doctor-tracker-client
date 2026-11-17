@@ -38,6 +38,7 @@ type DoctorsDataTableProps<TData> = {
   onPaginationChange: OnChangeFn<PaginationState>;
   columnVisibility: VisibilityState;
   onColumnVisibilityChange: OnChangeFn<VisibilityState>;
+  onRowClick?: (row: TData) => void;
   isLoading?: boolean;
   isError?: boolean;
   className?: string;
@@ -53,6 +54,7 @@ export function DoctorsDataTable<TData>({
   onPaginationChange,
   columnVisibility,
   onColumnVisibilityChange,
+  onRowClick,
   isLoading = false,
   isError = false,
   className,
@@ -114,7 +116,13 @@ export function DoctorsDataTable<TData>({
               </TableRow>
             ) : table.getRowModel().rows.length > 0 ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id}>
+                <TableRow
+                  key={row.id}
+                  className={cn(
+                    onRowClick && "hover:bg-muted/50 cursor-pointer",
+                  )}
+                  onClick={() => onRowClick?.(row.original)}
+                >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}

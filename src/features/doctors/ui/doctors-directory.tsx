@@ -7,9 +7,16 @@ import { useMemo, useState } from "react";
 
 import type { ListDoctorsParams } from "@/features/doctors/model/types";
 import { doctorFilterOptionsQuery, doctorsQuery } from "@/features/doctors/queries/doctors";
+import type { DoctorWithUser } from "@/features/doctors/model/types";
 import { CreateDoctorDialog } from "@/features/doctors/ui/create-doctor-dialog";
+import { DeleteDoctorDialog } from "@/features/doctors/ui/delete-doctor-dialog";
+import { DoctorDetailsDialog } from "@/features/doctors/ui/doctor-details-dialog";
 import { DoctorsDataTable } from "@/features/doctors/ui/doctors-data-table";
-import { doctorTableColumns } from "@/features/doctors/ui/doctors-table-columns";
+import {
+  createDoctorTableColumns,
+  type DoctorTableActions,
+} from "@/features/doctors/ui/doctors-table-columns";
+import { UpdateDoctorDialog } from "@/features/doctors/ui/update-doctor-dialog";
 import { DoctorsTableColumnMenu } from "@/features/doctors/ui/doctors-table-column-menu";
 import { useDebouncedValue } from "@/shared/hooks/use-debounced-value";
 import { ApiRequestError } from "@/shared/lib/api/errors";
@@ -23,6 +30,10 @@ import { Skeleton } from "@/shared/ui/skeleton";
 
 export function DoctorsDirectory() {
   const [createOpen, setCreateOpen] = useState(false);
+  const [selectedDoctor, setSelectedDoctor] = useState<DoctorWithUser | null>(null);
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const [updateOpen, setUpdateOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [specialization, setSpecialization] = useState("");
   const [hospital, setHospital] = useState("");
@@ -85,6 +96,34 @@ export function DoctorsDirectory() {
 
   const errorMessage =
     isError && error instanceof ApiRequestError ? error.message : undefined;
+
+  const tableActions = useMemo<DoctorTableActions>(
+    () => ({
+      onDetails: (doctor) => {
+        setSelectedDoctor(doctor);
+        setDetailsOpen(true);
+      },
+      onUpdate: (doctor) => {
+        setSelectedDoctor(doctor);
+        setUpdateOpen(true);
+      },
+      onDelete: (doctor) => {
+        setSelectedDoctor(doctor);
+        setDeleteOpen(true);
+      },
+    }),
+    [],
+  );
+
+  const tableColumns = useMemo(
+    () => createDoctorTableColumns(tableActions),
+    [tableActions],
+  );
+
+  const handleRowClick = (doctor: DoctorWithUser) => {
+    setSelectedDoctor(doctor);
+    setDetailsOpen(true);
+  };
 
   return (
     <>
@@ -165,7 +204,7 @@ export function DoctorsDirectory() {
             </div>
 
             <DoctorsTableColumnMenu
-              columns={doctorTableColumns}
+              columns={tableColumns}
               columnVisibility={columnVisibility}
               onColumnVisibilityChange={setColumnVisibility}
             />
@@ -192,13 +231,14 @@ export function DoctorsDirectory() {
             </p>
           ) : null}
           <DoctorsDataTable
-            columns={doctorTableColumns}
+            columns={tableColumns}
             data={doctors}
             pageCount={pageCount}
             pagination={pagination}
             onPaginationChange={setPagination}
             columnVisibility={columnVisibility}
             onColumnVisibilityChange={setColumnVisibility}
+            onRowClick={handleRowClick}
             isLoading={isPending}
             isError={isError}
           />
@@ -206,6 +246,24 @@ export function DoctorsDirectory() {
       </Card>
 
       <CreateDoctorDialog open={createOpen} onOpenChange={setCreateOpen} />
+
+      <DoctorDetailsDialog
+        doctor={selectedDoctor}
+        open={detailsOpen}
+        onOpenChange={setDetailsOpen}
+      />
+
+      <UpdateDoctorDialog
+        doctor={selectedDoctor}
+        open={updateOpen}
+        onOpenChange={setUpdateOpen}
+      />
+
+      <DeleteDoctorDialog
+        doctor={selectedDoctor}
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+      />
     </>
   );
 }

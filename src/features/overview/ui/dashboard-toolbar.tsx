@@ -163,11 +163,11 @@ export function DashboardToolbar({
                 <SelectValue />
               </SelectTrigger>
               <SelectContent
-                position="popper"
+                compact
                 side="bottom"
                 align="start"
                 sideOffset={4}
-                className="z-[200] min-w-[var(--radix-select-trigger-width)] max-h-fit p-1 data-[side=bottom]:translate-y-0 [&_[data-slot=select-scroll-up-button]]:hidden [&_[data-slot=select-scroll-down-button]]:hidden"
+                className="z-[200] min-w-[var(--radix-select-trigger-width)]"
               >
                 <SelectItem value="day">Day</SelectItem>
                 <SelectItem value="month">Month</SelectItem>

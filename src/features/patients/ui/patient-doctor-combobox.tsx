@@ -4,6 +4,7 @@ import { Check, ChevronsUpDown } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import type { PatientFilterDoctorOption } from "@/features/patients/model/types";
+import { directoryFilterOutlineButtonClassName } from "@/shared/lib/directory-filter-button-styles";
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
 import {
@@ -74,13 +75,10 @@ export function PatientDoctorCombobox({
           role="combobox"
           aria-expanded={open}
           disabled={disabled}
-          className={cn(
-            "h-8 w-full max-w-full min-w-0 shrink justify-between font-normal",
-            value
-              ? "border-primary/30 bg-accent text-accent-foreground hover:!bg-accent hover:!text-accent-foreground aria-expanded:!bg-accent aria-expanded:!text-accent-foreground"
-              : "text-muted-foreground hover:!bg-accent/35 hover:!text-foreground aria-expanded:!bg-accent/35",
+          className={directoryFilterOutlineButtonClassName(Boolean(value), cn(
+            "w-full max-w-full min-w-0 shrink justify-between",
             className,
-          )}
+          ))}
         >
           <span className="min-w-0 flex-1 truncate text-left">{displayLabel}</span>
           <ChevronsUpDown className="size-4 shrink-0 opacity-50" aria-hidden="true" />

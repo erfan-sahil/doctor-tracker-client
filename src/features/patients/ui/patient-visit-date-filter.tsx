@@ -8,6 +8,7 @@ import {
   formatDateOnlyLabel,
   parseDateOnly,
 } from "@/features/patients/lib/date-only";
+import { directoryFilterOutlineButtonClassName } from "@/shared/lib/directory-filter-button-styles";
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
 import { Calendar } from "@/shared/ui/calendar";
@@ -18,6 +19,8 @@ type PatientVisitDateFilterProps = {
   value: string;
   onValueChange: (value: string) => void;
   placeholder?: string;
+  /** Label for the clear action; defaults to `placeholder`. */
+  clearLabel?: string;
   disabled?: boolean;
   className?: string;
 };
@@ -30,9 +33,11 @@ export function PatientVisitDateFilter({
   value,
   onValueChange,
   placeholder = "All dates",
+  clearLabel,
   disabled = false,
   className,
 }: PatientVisitDateFilterProps) {
+  const clearActionLabel = clearLabel ?? placeholder;
   const [open, setOpen] = useState(false);
   const selectedDate = parseDateOnly(value);
   const displayLabel = formatDateOnlyLabel(value) ?? placeholder;
@@ -45,13 +50,10 @@ export function PatientVisitDateFilter({
           type="button"
           variant="outline"
           disabled={disabled}
-          className={cn(
-            "h-8 w-full max-w-full min-w-0 shrink justify-start gap-2 font-normal",
-            value
-              ? "border-primary/30 bg-accent text-accent-foreground hover:!bg-accent hover:!text-accent-foreground aria-expanded:!bg-accent aria-expanded:!text-accent-foreground"
-              : "text-muted-foreground hover:!bg-accent/35 hover:!text-foreground aria-expanded:!bg-accent/35",
+          className={directoryFilterOutlineButtonClassName(Boolean(value), cn(
+            "w-full max-w-full min-w-0 shrink justify-start gap-2",
             className,
-          )}
+          ))}
         >
           <CalendarIcon className="size-4 shrink-0 opacity-70" aria-hidden="true" />
           <span className="min-w-0 flex-1 truncate text-left">{displayLabel}</span>
@@ -86,7 +88,7 @@ export function PatientVisitDateFilter({
               setOpen(false);
             }}
           >
-            {placeholder}
+            {clearActionLabel}
           </Button>
         </div>
       </PopoverContent>

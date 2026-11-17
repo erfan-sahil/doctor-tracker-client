@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import type { PaginationState, VisibilityState } from "@tanstack/react-table";
-import { Plus, Search, X } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 import { useSessionStore } from "@/features/auth/model/session-store";
@@ -25,6 +25,7 @@ import { UpdatePatientDialog } from "@/features/patients/ui/update-patient-dialo
 import { ApiRequestError } from "@/shared/lib/api/errors";
 import { Button } from "@/shared/ui/button";
 import { Card, CardContent, CardHeader } from "@/shared/ui/card";
+import { ClearFiltersButton } from "@/shared/ui/clear-filters-button";
 import { DebouncedSearchInput } from "@/shared/ui/debounced-search-input";
 import { Label } from "@/shared/ui/label";
 import { PageHeader } from "@/shared/ui/page-header";
@@ -197,13 +198,14 @@ export function PatientsDirectory() {
 
       <Card>
         <CardHeader className="gap-4">
-          <div
-            className={
-              isAdmin
-                ? "grid min-w-0 gap-3 sm:grid-cols-2 xl:grid-cols-6"
-                : "grid min-w-0 gap-3 sm:grid-cols-2 xl:grid-cols-5"
-            }
-          >
+          <div className="flex min-w-0 flex-col gap-3 lg:flex-row lg:items-end lg:gap-4">
+            <div
+              className={
+                isAdmin
+                  ? "grid min-w-0 flex-1 gap-3 sm:grid-cols-2 xl:grid-cols-6"
+                  : "grid min-w-0 flex-1 gap-3 sm:grid-cols-2 xl:grid-cols-5"
+              }
+            >
             <div className="flex min-w-0 flex-col gap-2 sm:col-span-2 xl:col-span-2">
               <Label htmlFor="patient-search">Search</Label>
               <div className="relative">
@@ -285,20 +287,15 @@ export function PatientsDirectory() {
               columnVisibility={columnVisibility}
               onColumnVisibilityChange={setColumnVisibility}
             />
-          </div>
+            </div>
 
-          {filtersActive ? (
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              className="w-fit"
-              onClick={clearFilters}
-            >
-              <X className="size-4" aria-hidden="true" />
-              Clear filters
-            </Button>
-          ) : null}
+            {filtersActive ? (
+              <ClearFiltersButton
+                className="self-end lg:self-auto"
+                onClick={clearFilters}
+              />
+            ) : null}
+          </div>
         </CardHeader>
 
         <CardContent>

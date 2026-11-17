@@ -19,6 +19,7 @@ import {
   patientDialogHeaderClassName,
 } from "@/features/patients/ui/patient-dialog-styles";
 import { PatientDoctorCombobox } from "@/features/patients/ui/patient-doctor-combobox";
+import { PatientVisitDateFilter } from "@/features/patients/ui/patient-visit-date-filter";
 import { ApiRequestError } from "@/shared/lib/api/errors";
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
@@ -192,11 +193,12 @@ export function CreatePatientDialog({ open, onOpenChange, doctors }: CreatePatie
                     <FormItem>
                       <FormLabel>Visit date (optional)</FormLabel>
                       <FormControl>
-                        <Input
-                          type="date"
-                          disabled={pending}
-                          {...field}
+                        <PatientVisitDateFilter
                           value={field.value ?? ""}
+                          onValueChange={field.onChange}
+                          disabled={pending}
+                          placeholder="Select visit date"
+                          clearLabel="No visit date"
                         />
                       </FormControl>
                       <FormMessage />

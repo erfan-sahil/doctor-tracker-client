@@ -3,6 +3,7 @@
 import { Check, ChevronsUpDown } from "lucide-react";
 import { useMemo, useState } from "react";
 
+import { directoryFilterOutlineButtonClassName } from "@/shared/lib/directory-filter-button-styles";
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
 import {
@@ -103,13 +104,10 @@ export function SearchableCombobox({
           role="combobox"
           aria-expanded={open}
           disabled={disabled}
-          className={cn(
-            "h-8 w-full justify-between font-normal",
-            value
-              ? "border-primary/30 bg-accent text-accent-foreground hover:!bg-accent hover:!text-accent-foreground aria-expanded:!bg-accent aria-expanded:!text-accent-foreground"
-              : "text-muted-foreground hover:!bg-accent/35 hover:!text-foreground aria-expanded:!bg-accent/35",
+          className={directoryFilterOutlineButtonClassName(Boolean(value), cn(
+            "w-full justify-between",
             className,
-          )}
+          ))}
         >
           <span className="truncate">{displayLabel}</span>
           <ChevronsUpDown className="size-4 shrink-0 opacity-50" aria-hidden="true" />

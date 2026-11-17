@@ -113,6 +113,7 @@ export function LoginForm() {
               inputMode="email"
               autoFocus
               disabled={pending}
+              placeholder="you@clinic.com"
               aria-invalid={errors.email ? true : undefined}
               className={authFieldInputClassName}
               {...register("email", {
@@ -132,6 +133,7 @@ export function LoginForm() {
               id="password"
               autoComplete="current-password"
               disabled={pending}
+              placeholder="Enter your password"
               aria-invalid={errors.password ? true : undefined}
               {...register("password", {
                 onChange: () => setFormError(null),

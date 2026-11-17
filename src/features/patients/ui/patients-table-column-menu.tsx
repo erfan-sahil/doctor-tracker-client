@@ -3,6 +3,7 @@
 import type { ColumnDef, OnChangeFn, VisibilityState } from "@tanstack/react-table";
 import { Columns3 } from "lucide-react";
 
+import { directoryFilterOutlineButtonClassName } from "@/shared/lib/directory-filter-button-styles";
 import { Button } from "@/shared/ui/button";
 import {
   DropdownMenu,
@@ -46,7 +47,7 @@ export function PatientsTableColumnMenu<TData>({
           <Button
             variant="outline"
             type="button"
-            className="w-full justify-start"
+            className={directoryFilterOutlineButtonClassName(false, "w-full justify-start gap-2")}
             aria-labelledby="patient-table-columns-label"
           >
             <Columns3 className="size-4" aria-hidden="true" />

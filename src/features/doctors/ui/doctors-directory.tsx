@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import type { PaginationState, VisibilityState } from "@tanstack/react-table";
-import { Plus, Search, X } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 import type { ListDoctorsParams } from "@/features/doctors/model/types";
@@ -21,6 +21,7 @@ import { DoctorsTableColumnMenu } from "@/features/doctors/ui/doctors-table-colu
 import { ApiRequestError } from "@/shared/lib/api/errors";
 import { Button } from "@/shared/ui/button";
 import { Card, CardContent, CardHeader } from "@/shared/ui/card";
+import { ClearFiltersButton } from "@/shared/ui/clear-filters-button";
 import { DebouncedSearchInput } from "@/shared/ui/debounced-search-input";
 import { Label } from "@/shared/ui/label";
 import { PageHeader } from "@/shared/ui/page-header";
@@ -147,7 +148,8 @@ export function DoctorsDirectory() {
 
       <Card>
         <CardHeader className="gap-4">
-          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+          <div className="flex min-w-0 flex-col gap-3 lg:flex-row lg:items-end lg:gap-4">
+            <div className="grid min-w-0 flex-1 gap-3 sm:grid-cols-2 xl:grid-cols-5">
             <div className="flex flex-col gap-2 sm:col-span-2 xl:col-span-2">
               <Label htmlFor="doctor-search">Search</Label>
               <div className="relative">
@@ -214,20 +216,15 @@ export function DoctorsDirectory() {
               columnVisibility={columnVisibility}
               onColumnVisibilityChange={setColumnVisibility}
             />
-          </div>
+            </div>
 
-          {filtersActive ? (
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              className="w-fit"
-              onClick={clearFilters}
-            >
-              <X className="size-4" aria-hidden="true" />
-              Clear filters
-            </Button>
-          ) : null}
+            {filtersActive ? (
+              <ClearFiltersButton
+                className="self-end lg:self-auto"
+                onClick={clearFilters}
+              />
+            ) : null}
+          </div>
         </CardHeader>
 
         <CardContent>

@@ -68,14 +68,19 @@ export function DashboardShell({ children }: { children: ReactNode }) {
         <SidebarContent>
           <SidebarGroup>
             <SidebarGroupContent>
-              <SidebarMenu>
+              <SidebarMenu className="gap-1">
                 {navItems.map((item) => {
                   const active = isActive(pathname, item.href);
                   const Icon = item.icon;
 
                   return (
                     <SidebarMenuItem key={item.href}>
-                      <SidebarMenuButton asChild isActive={active} tooltip={item.label}>
+                      <SidebarMenuButton
+                        asChild
+                        isActive={active}
+                        tooltip={item.label}
+                        className="min-h-10 gap-2.5 px-2.5 py-2 [&_svg]:size-[1.125rem]"
+                      >
                         <Link href={item.href} aria-current={active ? "page" : undefined}>
                           <Icon />
                           <span>{item.label}</span>

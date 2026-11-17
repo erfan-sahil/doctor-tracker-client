@@ -453,7 +453,7 @@ function SidebarMenuItem({ className, ...props }: React.ComponentProps<"li">) {
 }
 
 const sidebarMenuButtonVariants = cva(
-  "peer/menu-button group/menu-button flex w-full items-center gap-2 overflow-hidden rounded-lg p-2 text-left text-sm ring-sidebar-ring outline-hidden transition-[width,height,padding] group-has-data-[sidebar=menu-action]/menu-item:pr-8 group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! hover:bg-secondary hover:text-secondary-foreground focus-visible:ring-2 active:bg-secondary active:text-secondary-foreground disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-open:hover:bg-secondary data-open:hover:text-secondary-foreground data-active:bg-sidebar-primary data-active:font-medium data-active:text-sidebar-primary-foreground [&_svg]:size-4 [&_svg]:shrink-0 [&>span:last-child]:truncate data-active:hover:bg-sidebar-primary data-active:hover:text-sidebar-primary-foreground",
+  "peer/menu-button group/menu-button flex w-full items-center gap-2 overflow-hidden rounded-lg p-2 text-left text-sm ring-sidebar-ring outline-hidden transition-[width,height,padding] group-has-data-[sidebar=menu-action]/menu-item:pr-8 group-data-[collapsible=icon]:size-9! group-data-[collapsible=icon]:p-2! hover:bg-secondary hover:text-secondary-foreground focus-visible:ring-2 active:bg-secondary active:text-secondary-foreground disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-open:hover:bg-secondary data-open:hover:text-secondary-foreground data-active:bg-sidebar-primary data-active:font-medium data-active:text-sidebar-primary-foreground [&_svg]:size-4 [&_svg]:shrink-0 [&>span:last-child]:truncate data-active:hover:bg-sidebar-primary data-active:hover:text-sidebar-primary-foreground",
   {
     variants: {
       variant: {
@@ -462,7 +462,7 @@ const sidebarMenuButtonVariants = cva(
           "bg-background shadow-[0_0_0_1px_var(--sidebar-border)] hover:bg-secondary hover:text-secondary-foreground hover:shadow-[0_0_0_1px_var(--border)]",
       },
       size: {
-        default: "min-h-8 text-sm",
+        default: "min-h-9 text-sm",
         sm: "h-7 text-xs",
         lg: "h-12 text-sm group-data-[collapsible=icon]:p-0!",
       },

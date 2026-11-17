@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
+import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -13,6 +14,7 @@ import { sanitizeNext } from "@/features/auth/lib/sanitize-next";
 import { loginSchema, type LoginFormValues } from "@/features/auth/model/login-schema";
 import { useSessionStore } from "@/features/auth/model/session-store";
 import { currentUserQuery } from "@/features/auth/queries/current-user";
+import { siteConfig } from "@/shared/config/site";
 import { ApiRequestError } from "@/shared/lib/api/errors";
 import { getQueryClient } from "@/shared/lib/query/client";
 import { resetAppQueriesForAuthChange } from "@/shared/lib/query/reset-on-auth-change";
@@ -97,6 +99,23 @@ export function LoginForm() {
         )}
       >
         <div className="flex flex-col items-center gap-3.5 text-center">
+          <Image
+            src={siteConfig.loginLogo}
+            alt={siteConfig.name}
+            width={320}
+            height={120}
+            className="h-auto w-full max-w-[17.5rem] object-contain sm:max-w-[19rem] dark:hidden"
+            priority
+          />
+          <Image
+            src={siteConfig.loginLogoDark}
+            alt=""
+            aria-hidden
+            width={320}
+            height={120}
+            className="hidden h-auto w-full max-w-[17.5rem] object-contain sm:max-w-[19rem] dark:block"
+            priority
+          />
           <p className="text-primary text-xs font-semibold tracking-[0.14em] uppercase">Sign in</p>
           <CardTitle className="text-2xl leading-tight font-semibold tracking-tight sm:text-3xl">
             Welcome back

@@ -5,6 +5,8 @@ import type { PaginationState, VisibilityState } from "@tanstack/react-table";
 import { Plus, Search } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
+import { useSessionReady } from "@/features/auth/lib/use-session-ready";
+import { useSessionStore } from "@/features/auth/model/session-store";
 import type { ListDoctorsParams } from "@/features/doctors/model/types";
 import { doctorFilterOptionsQuery, doctorsQuery } from "@/features/doctors/queries/doctors";
 import type { DoctorWithUser } from "@/features/doctors/model/types";
@@ -31,6 +33,8 @@ import { Skeleton } from "@/shared/ui/skeleton";
 const DOCTOR_SEARCH_DEBOUNCE_MS = 350;
 
 export function DoctorsDirectory() {
+  const sessionReady = useSessionReady();
+  const isAdmin = useSessionStore((state) => state.user?.role === "admin");
   const [createOpen, setCreateOpen] = useState(false);
   const [selectedDoctor, setSelectedDoctor] = useState<DoctorWithUser | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
@@ -77,12 +81,18 @@ export function DoctorsDirectory() {
     specialization,
   ]);
 
-  const { data, isPending, isError, error } = useQuery(doctorsQuery(queryParams));
+  const { data, isPending, isError, error } = useQuery({
+    ...doctorsQuery(queryParams),
+    enabled: sessionReady && isAdmin,
+  });
   const {
     data: filterOptions,
     isPending: filterOptionsPending,
     isError: filterOptionsError,
-  } = useQuery(doctorFilterOptionsQuery());
+  } = useQuery({
+    ...doctorFilterOptionsQuery(),
+    enabled: sessionReady && isAdmin,
+  });
 
   const doctors = data?.doctors ?? [];
   const pageCount = data?.totalPages ?? 0;

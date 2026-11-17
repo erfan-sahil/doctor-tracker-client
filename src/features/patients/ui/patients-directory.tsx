@@ -5,6 +5,7 @@ import type { PaginationState, VisibilityState } from "@tanstack/react-table";
 import { Plus, Search } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
+import { useSessionReady } from "@/features/auth/lib/use-session-ready";
 import { useSessionStore } from "@/features/auth/model/session-store";
 import { doctorsQuery } from "@/features/doctors/queries/doctors";
 import { toDoctorRosterOptions } from "@/features/patients/lib/to-doctor-roster-options";
@@ -36,6 +37,7 @@ const PATIENT_SEARCH_DEBOUNCE_MS = 350;
 const DOCTOR_ROSTER_PAGE_SIZE = 100;
 
 export function PatientsDirectory() {
+  const sessionReady = useSessionReady();
   const user = useSessionStore((state) => state.user);
   const isAdmin = user?.role === "admin";
 
@@ -91,12 +93,18 @@ export function PatientsDirectory() {
     visitDate,
   ]);
 
-  const { data, isPending, isError, error } = useQuery(patientsQuery(queryParams));
+  const { data, isPending, isError, error } = useQuery({
+    ...patientsQuery(queryParams),
+    enabled: sessionReady,
+  });
   const {
     data: filterOptions,
     isPending: filterOptionsPending,
     isError: filterOptionsError,
-  } = useQuery(patientFilterOptionsQuery());
+  } = useQuery({
+    ...patientFilterOptionsQuery(),
+    enabled: sessionReady,
+  });
 
   const {
     data: doctorRoster,
@@ -104,7 +112,7 @@ export function PatientsDirectory() {
     isError: doctorRosterError,
   } = useQuery({
     ...doctorsQuery({ limit: DOCTOR_ROSTER_PAGE_SIZE }),
-    enabled: isAdmin,
+    enabled: sessionReady && isAdmin,
   });
 
   const patients = data?.patients ?? [];

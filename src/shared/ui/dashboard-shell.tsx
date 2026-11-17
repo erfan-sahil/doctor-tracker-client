@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useMemo, type ReactNode } from "react";
@@ -67,9 +68,14 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                 className="hover:bg-transparent hover:text-sidebar-foreground active:bg-transparent active:text-sidebar-foreground data-active:bg-transparent data-active:text-sidebar-foreground data-active:font-semibold"
               >
                 <Link href={siteConfig.routes.overview}>
-                  <span className="bg-sidebar-primary text-sidebar-primary-foreground flex size-8 items-center justify-center rounded-lg text-xs font-semibold">
-                    DT
-                  </span>
+                  <Image
+                    src={siteConfig.brandIcon}
+                    alt=""
+                    width={32}
+                    height={32}
+                    className="size-8 shrink-0 rounded-lg object-contain"
+                    priority
+                  />
                   <span className="truncate font-semibold">{siteConfig.name}</span>
                 </Link>
               </SidebarMenuButton>

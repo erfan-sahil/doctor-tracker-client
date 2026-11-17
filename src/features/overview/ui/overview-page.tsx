@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Activity, BarChart3, LineChart, PieChart, Stethoscope, Users } from "lucide-react";
 import { useMemo, useState } from "react";
 
+import { useSessionReady } from "@/features/auth/lib/use-session-ready";
 import { useSessionStore } from "@/features/auth/model/session-store";
 import type { DashboardParams } from "@/features/overview/model/types";
 import { overviewQuery } from "@/features/overview/queries/overview";
@@ -59,12 +60,16 @@ type StatConfig = {
 };
 
 export function OverviewPage() {
+  const sessionReady = useSessionReady();
   const user = useSessionStore((state) => state.user);
   const isAdmin = user?.role === "admin";
   const [filters, setFilters] = useState(defaultDashboardFilters);
 
   const queryParams = useMemo(() => filtersToParams(filters), [filters]);
-  const { data, isPending, isError, error, isFetching } = useQuery(overviewQuery(queryParams));
+  const { data, isPending, isError, error, isFetching } = useQuery({
+    ...overviewQuery(queryParams),
+    enabled: sessionReady,
+  });
 
   const visitSeriesTotal = useMemo(
     () => data?.patientsByDate.reduce((sum, row) => sum + row.count, 0) ?? 0,

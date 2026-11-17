@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useLayoutEffect, type ReactNode } from "react";
 
 import { siteConfig } from "@/shared/config/site";
+import { cn } from "@/shared/lib/utils";
 
 import { useSessionStore } from "../model/session-store";
 import { AuthLoading } from "./auth-loading";
@@ -23,9 +24,14 @@ export function AdminGuard({ children }: { children: ReactNode }) {
     }
   }, [isAdmin, isBootstrapped, router]);
 
-  if (!isBootstrapped || !isAdmin) {
-    return <AuthLoading />;
-  }
+  const canView = isBootstrapped && isAdmin;
 
-  return children;
+  return (
+    <>
+      {!canView ? <AuthLoading /> : null}
+      <div className={cn(!canView && "hidden")} aria-hidden={!canView}>
+        {children}
+      </div>
+    </>
+  );
 }

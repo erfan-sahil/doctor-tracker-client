@@ -1,6 +1,13 @@
 "use client";
 
 import { Button } from "@/shared/ui/button";
+import {
+  Card,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/shared/ui/card";
 
 type AppErrorProps = {
   error: Error & { digest?: string };
@@ -9,12 +16,18 @@ type AppErrorProps = {
 
 export default function AppError({ error, reset }: AppErrorProps) {
   return (
-    <main className="flex flex-1 flex-col items-center justify-center gap-4 px-6 text-center">
-      <h1 className="text-2xl font-semibold tracking-tight">Something went wrong</h1>
-      <p className="text-muted-foreground max-w-md text-sm">{error.message}</p>
-      <Button type="button" onClick={reset}>
-        Try again
-      </Button>
+    <main className="flex flex-1 items-center justify-center p-6">
+      <Card className="w-full max-w-md text-center">
+        <CardHeader>
+          <CardTitle className="text-2xl">Something went wrong</CardTitle>
+          <CardDescription>{error.message}</CardDescription>
+        </CardHeader>
+        <CardFooter className="justify-center">
+          <Button type="button" onClick={reset}>
+            Try again
+          </Button>
+        </CardFooter>
+      </Card>
     </main>
   );
 }

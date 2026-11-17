@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 
+import { Card, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card";
+import { Skeleton } from "@/shared/ui/skeleton";
+
 type DoctorPageProps = PageProps<"/doctors/[doctorId]">;
 
 export async function generateMetadata({ params }: DoctorPageProps): Promise<Metadata> {
@@ -13,14 +16,25 @@ export async function generateMetadata({ params }: DoctorPageProps): Promise<Met
 
 export default function DoctorPage({ params }: DoctorPageProps) {
   return (
-    <Suspense fallback={<p className="text-muted-foreground text-sm">Loading doctor…</p>}>
+    <Suspense
+      fallback={
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-7 w-32" />
+            <Skeleton className="h-4 w-64" />
+          </CardHeader>
+        </Card>
+      }
+    >
       {params.then(({ doctorId }) => (
-        <section className="flex flex-col gap-2">
-          <h1 className="text-2xl font-semibold tracking-tight">Doctor</h1>
-          <p className="text-muted-foreground text-sm">
-            Doctor {doctorId} will load from the doctors feature.
-          </p>
-        </section>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-2xl">Doctor</CardTitle>
+            <CardDescription>
+              Doctor {doctorId} will load from the doctors feature.
+            </CardDescription>
+          </CardHeader>
+        </Card>
       ))}
     </Suspense>
   );

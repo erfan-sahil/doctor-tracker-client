@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { siteConfig } from "@/shared/config/site";
+import { Card, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card";
 
 export const metadata: Metadata = {
   title: "Sign in",
@@ -8,11 +9,13 @@ export const metadata: Metadata = {
 
 export default function LoginPage() {
   return (
-    <section className="flex flex-col gap-2">
-      <h1 className="text-2xl font-semibold tracking-tight">Sign in</h1>
-      <p className="text-muted-foreground text-sm">
-        Staff sign-in for {siteConfig.name} will live here.
-      </p>
-    </section>
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-2xl">Sign in</CardTitle>
+        <CardDescription>
+          Staff sign-in for {siteConfig.name} will live here.
+        </CardDescription>
+      </CardHeader>
+    </Card>
   );
 }

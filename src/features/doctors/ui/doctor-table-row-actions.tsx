@@ -37,7 +37,7 @@ export function DoctorTableRowActions({
             type="button"
             variant="ghost"
             size="icon-sm"
-            className="text-muted-foreground"
+            className="cursor-pointer text-muted-foreground"
             aria-label={`Actions for ${doctor.doctor.name}`}
           >
             <EllipsisVertical className="size-4" aria-hidden />

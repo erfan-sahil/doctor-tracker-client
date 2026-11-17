@@ -6,8 +6,8 @@ import { useState } from "react";
 import { useDeleteDoctorMutation } from "@/features/doctors/mutations/use-delete-doctor";
 import type { DoctorWithUser } from "@/features/doctors/model/types";
 import {
+  doctorDeleteDialogHeaderClassName,
   doctorDialogFooterClassName,
-  doctorDialogHeaderClassName,
 } from "@/features/doctors/ui/doctor-dialog-styles";
 import { ApiRequestError } from "@/shared/lib/api/errors";
 import { Button } from "@/shared/ui/button";
@@ -65,8 +65,8 @@ export function DeleteDoctorDialog({ doctor, open, onOpenChange }: DeleteDoctorD
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="gap-0 overflow-hidden p-0 sm:max-w-md">
-        <DialogHeader className={doctorDialogHeaderClassName}>
-          <p className="text-primary text-xs font-semibold tracking-[0.14em] uppercase">
+        <DialogHeader className={doctorDeleteDialogHeaderClassName}>
+          <p className="text-destructive text-xs font-semibold tracking-[0.14em] uppercase">
             Remove doctor
           </p>
           <DialogTitle className="text-lg font-semibold tracking-tight">Delete doctor</DialogTitle>

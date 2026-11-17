@@ -3,7 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import type { PaginationState, VisibilityState } from "@tanstack/react-table";
 import { Plus, Search, X } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import type { ListDoctorsParams } from "@/features/doctors/model/types";
 import { doctorFilterOptionsQuery, doctorsQuery } from "@/features/doctors/queries/doctors";
@@ -18,15 +18,16 @@ import {
 } from "@/features/doctors/ui/doctors-table-columns";
 import { UpdateDoctorDialog } from "@/features/doctors/ui/update-doctor-dialog";
 import { DoctorsTableColumnMenu } from "@/features/doctors/ui/doctors-table-column-menu";
-import { useDebouncedValue } from "@/shared/hooks/use-debounced-value";
 import { ApiRequestError } from "@/shared/lib/api/errors";
 import { Button } from "@/shared/ui/button";
 import { Card, CardContent, CardHeader } from "@/shared/ui/card";
-import { Input } from "@/shared/ui/input";
+import { DebouncedSearchInput } from "@/shared/ui/debounced-search-input";
 import { Label } from "@/shared/ui/label";
 import { PageHeader } from "@/shared/ui/page-header";
 import { SearchableCombobox } from "@/shared/ui/searchable-combobox";
 import { Skeleton } from "@/shared/ui/skeleton";
+
+const DOCTOR_SEARCH_DEBOUNCE_MS = 350;
 
 export function DoctorsDirectory() {
   const [createOpen, setCreateOpen] = useState(false);
@@ -35,6 +36,7 @@ export function DoctorsDirectory() {
   const [updateOpen, setUpdateOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [specialization, setSpecialization] = useState("");
   const [hospital, setHospital] = useState("");
   const [pagination, setPagination] = useState<PaginationState>({
@@ -43,7 +45,11 @@ export function DoctorsDirectory() {
   });
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
-  const debouncedSearch = useDebouncedValue(search.trim(), 350);
+  useEffect(() => {
+    setPagination((current) =>
+      current.pageIndex === 0 ? current : { ...current, pageIndex: 0 },
+    );
+  }, [debouncedSearch]);
 
   const queryParams = useMemo<ListDoctorsParams>(() => {
     const params: ListDoctorsParams = {
@@ -89,6 +95,7 @@ export function DoctorsDirectory() {
 
   const clearFilters = () => {
     setSearch("");
+    setDebouncedSearch("");
     setSpecialization("");
     setHospital("");
     resetToFirstPage();
@@ -148,13 +155,12 @@ export function DoctorsDirectory() {
                   className="text-muted-foreground pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2"
                   aria-hidden="true"
                 />
-                <Input
+                <DebouncedSearchInput
                   id="doctor-search"
                   value={search}
-                  onChange={(event) => {
-                    setSearch(event.target.value);
-                    resetToFirstPage();
-                  }}
+                  onValueChange={setSearch}
+                  onDebouncedChange={setDebouncedSearch}
+                  debounceMs={DOCTOR_SEARCH_DEBOUNCE_MS}
                   placeholder="Search by name or email"
                   className="pl-9"
                 />

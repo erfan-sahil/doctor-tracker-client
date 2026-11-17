@@ -11,7 +11,7 @@ import {
   doctorDialogHeaderClassName,
 } from "@/features/doctors/ui/doctor-dialog-styles";
 import { cn } from "@/shared/lib/utils";
-import { Badge } from "@/shared/ui/badge";
+import { ActiveStatusBadge } from "@/shared/ui/status-badge";
 import { Button } from "@/shared/ui/button";
 import {
   Dialog,
@@ -96,9 +96,7 @@ export function DoctorDetailsDialog({
               <DialogTitle className="text-xl leading-tight font-semibold tracking-tight">
                 {profile.name}
               </DialogTitle>
-              <Badge variant={user.isActive ? "secondary" : "outline"} className="w-fit">
-                {user.isActive ? "Active" : "Inactive"}
-              </Badge>
+              <ActiveStatusBadge active={user.isActive} className="w-fit" />
               <p className="text-muted-foreground truncate text-sm">{user.email}</p>
             </div>
           </div>

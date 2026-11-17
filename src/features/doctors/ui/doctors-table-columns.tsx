@@ -4,7 +4,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 
 import type { DoctorWithUser } from "@/features/doctors/model/types";
 import { DoctorTableRowActions } from "@/features/doctors/ui/doctor-table-row-actions";
-import { Badge } from "@/shared/ui/badge";
+import { ActiveStatusBadge } from "@/shared/ui/status-badge";
 
 export type DoctorTableActions = {
   onDetails: (doctor: DoctorWithUser) => void;
@@ -50,11 +50,7 @@ export function createDoctorTableColumns(
       header: "Status",
       cell: ({ row }) => {
         const active = row.original.user.isActive;
-        return (
-          <Badge variant={active ? "secondary" : "outline"}>
-            {active ? "Active" : "Inactive"}
-          </Badge>
-        );
+        return <ActiveStatusBadge active={active} />;
       },
     },
     {

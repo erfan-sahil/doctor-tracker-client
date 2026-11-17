@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import { LayoutDashboard, Stethoscope, Users } from "lucide-react";
 
-import { LogoutButton } from "@/features/auth/ui/logout-button";
+import { SidebarUserMenu } from "@/features/auth/ui/sidebar-user-menu";
 import { siteConfig } from "@/shared/config/site";
 import { Separator } from "@/shared/ui/separator";
 import { ThemeToggle } from "@/shared/ui/theme-toggle";
@@ -15,7 +15,6 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarInset,
   SidebarMenu,
@@ -49,17 +48,17 @@ export function DashboardShell({ children }: { children: ReactNode }) {
         <SidebarHeader className="gap-2 pb-0">
           <SidebarMenu className="gap-0">
             <SidebarMenuItem>
-              <SidebarMenuButton size="lg" asChild tooltip={siteConfig.name}>
+              <SidebarMenuButton
+                size="lg"
+                asChild
+                tooltip={siteConfig.name}
+                className="hover:bg-transparent hover:text-sidebar-foreground active:bg-transparent active:text-sidebar-foreground data-active:bg-transparent data-active:text-sidebar-foreground data-active:font-semibold"
+              >
                 <Link href={siteConfig.routes.dashboard}>
-                  <span className="bg-primary text-primary-foreground flex size-8 items-center justify-center rounded-lg text-xs font-semibold">
+                  <span className="bg-sidebar-primary text-sidebar-primary-foreground flex size-8 items-center justify-center rounded-lg text-xs font-semibold">
                     DT
                   </span>
-                  <span className="grid flex-1 text-left leading-tight">
-                    <span className="truncate font-semibold">{siteConfig.name}</span>
-                    <span className="text-muted-foreground truncate text-xs">
-                      Clinic workspace
-                    </span>
-                  </span>
+                  <span className="truncate font-semibold">{siteConfig.name}</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -68,7 +67,6 @@ export function DashboardShell({ children }: { children: ReactNode }) {
         <Separator className="bg-sidebar-border mx-3 w-auto" />
         <SidebarContent>
           <SidebarGroup>
-            <SidebarGroupLabel className="px-2">Clinic</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 {navItems.map((item) => {
@@ -90,11 +88,8 @@ export function DashboardShell({ children }: { children: ReactNode }) {
             </SidebarGroupContent>
           </SidebarGroup>
         </SidebarContent>
-        <SidebarFooter className="border-sidebar-border gap-3 border-t pt-2">
-          <LogoutButton />
-          <p className="text-muted-foreground px-2 text-xs leading-relaxed group-data-[collapsible=icon]:hidden">
-            Doctors, patients, and clinic activity.
-          </p>
+        <SidebarFooter className="border-sidebar-border border-t">
+          <SidebarUserMenu />
         </SidebarFooter>
         <SidebarRail />
       </Sidebar>

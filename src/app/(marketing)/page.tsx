@@ -13,7 +13,7 @@ import {
 
 export default function HomePage() {
   return (
-    <main className="relative flex flex-1 items-center justify-center bg-[radial-gradient(ellipse_80%_60%_at_50%_-20%,color-mix(in_oklch,var(--primary),transparent_82%),transparent)] p-4 sm:p-6">
+    <main className="relative flex flex-1 items-center justify-center bg-[radial-gradient(ellipse_80%_60%_at_50%_-20%,color-mix(in_oklch,var(--primary),transparent_88%),transparent)] p-4 sm:p-6">
       <div className="absolute top-3 right-3 sm:top-4 sm:right-4">
         <ThemeToggle />
       </div>

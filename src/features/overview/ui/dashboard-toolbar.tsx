@@ -162,7 +162,13 @@ export function DashboardToolbar({
               <SelectTrigger id="dashboard-group-by" size="sm" className="h-8 w-full">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent position="popper" side="bottom" align="start" sideOffset={6} className="z-[200]">
+              <SelectContent
+                position="popper"
+                side="bottom"
+                align="start"
+                sideOffset={4}
+                className="z-[200] min-w-[var(--radix-select-trigger-width)] max-h-fit p-1 data-[side=bottom]:translate-y-0 [&_[data-slot=select-scroll-up-button]]:hidden [&_[data-slot=select-scroll-down-button]]:hidden"
+              >
                 <SelectItem value="day">Day</SelectItem>
                 <SelectItem value="month">Month</SelectItem>
               </SelectContent>

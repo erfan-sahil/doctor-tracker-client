@@ -5,11 +5,16 @@ import type { ApiSuccess } from "@/shared/types/api";
 import type {
   CreateDoctorInput,
   DoctorAccount,
+  DoctorFilterOptions,
   DoctorWithUser,
   ListDoctorsParams,
   PaginatedDoctors,
   UpdateDoctorInput,
 } from "../model/types";
+
+export function listDoctorFilterOptions(): Promise<DoctorFilterOptions> {
+  return apiData(apiClient.get<ApiSuccess<DoctorFilterOptions>>("/doctors/filters"));
+}
 
 export function listDoctors(params: ListDoctorsParams = {}): Promise<PaginatedDoctors> {
   return apiData(

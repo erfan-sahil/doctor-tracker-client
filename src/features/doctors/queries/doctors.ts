@@ -1,8 +1,20 @@
 import { queryOptions } from "@tanstack/react-query";
 
-import { getDoctor, listDoctorPatients, listDoctors } from "../api/doctors-api";
+import {
+  getDoctor,
+  listDoctorFilterOptions,
+  listDoctorPatients,
+  listDoctors,
+} from "../api/doctors-api";
 import type { ListDoctorsParams } from "../model/types";
 import { doctorKeys } from "./keys";
+
+export function doctorFilterOptionsQuery() {
+  return queryOptions({
+    queryKey: doctorKeys.filterOptions(),
+    queryFn: () => listDoctorFilterOptions(),
+  });
+}
 
 export function doctorsQuery(params: ListDoctorsParams = {}) {
   return queryOptions({

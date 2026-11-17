@@ -7,4 +7,5 @@ export const doctorKeys = {
   details: () => [...doctorKeys.all, "detail"] as const,
   detail: (id: string) => [...doctorKeys.details(), id] as const,
   patients: (id: string) => [...doctorKeys.all, "patients", id] as const,
+  filterOptions: () => [...doctorKeys.all, "filter-options"] as const,
 };

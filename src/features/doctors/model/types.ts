@@ -30,6 +30,11 @@ export type ListDoctorsParams = {
   hospital?: string;
 };
 
+export type DoctorFilterOptions = {
+  specializations: string[];
+  hospitals: string[];
+};
+
 export type CreateDoctorInput = {
   name: string;
   email: string;

@@ -1,0 +1,211 @@
+"use client";
+
+import { useQuery } from "@tanstack/react-query";
+import type { PaginationState, VisibilityState } from "@tanstack/react-table";
+import { Plus, Search, X } from "lucide-react";
+import { useMemo, useState } from "react";
+
+import type { ListDoctorsParams } from "@/features/doctors/model/types";
+import { doctorFilterOptionsQuery, doctorsQuery } from "@/features/doctors/queries/doctors";
+import { CreateDoctorDialog } from "@/features/doctors/ui/create-doctor-dialog";
+import { DoctorsDataTable } from "@/features/doctors/ui/doctors-data-table";
+import { doctorTableColumns } from "@/features/doctors/ui/doctors-table-columns";
+import { DoctorsTableColumnMenu } from "@/features/doctors/ui/doctors-table-column-menu";
+import { useDebouncedValue } from "@/shared/hooks/use-debounced-value";
+import { ApiRequestError } from "@/shared/lib/api/errors";
+import { Button } from "@/shared/ui/button";
+import { Card, CardContent, CardHeader } from "@/shared/ui/card";
+import { Input } from "@/shared/ui/input";
+import { Label } from "@/shared/ui/label";
+import { PageHeader } from "@/shared/ui/page-header";
+import { SearchableCombobox } from "@/shared/ui/searchable-combobox";
+import { Skeleton } from "@/shared/ui/skeleton";
+
+export function DoctorsDirectory() {
+  const [createOpen, setCreateOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const [specialization, setSpecialization] = useState("");
+  const [hospital, setHospital] = useState("");
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10,
+  });
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+
+  const debouncedSearch = useDebouncedValue(search.trim(), 350);
+
+  const queryParams = useMemo<ListDoctorsParams>(() => {
+    const params: ListDoctorsParams = {
+      page: pagination.pageIndex + 1,
+      limit: pagination.pageSize,
+    };
+
+    if (debouncedSearch) {
+      params.search = debouncedSearch;
+    }
+    if (specialization) {
+      params.specialization = specialization;
+    }
+    if (hospital) {
+      params.hospital = hospital;
+    }
+
+    return params;
+  }, [
+    debouncedSearch,
+    hospital,
+    pagination.pageIndex,
+    pagination.pageSize,
+    specialization,
+  ]);
+
+  const { data, isPending, isError, error } = useQuery(doctorsQuery(queryParams));
+  const {
+    data: filterOptions,
+    isPending: filterOptionsPending,
+    isError: filterOptionsError,
+  } = useQuery(doctorFilterOptionsQuery());
+
+  const doctors = data?.doctors ?? [];
+  const pageCount = data?.totalPages ?? 0;
+
+  const filtersActive =
+    search.trim().length > 0 || specialization.length > 0 || hospital.length > 0;
+
+  const resetToFirstPage = () => {
+    setPagination((current) => ({ ...current, pageIndex: 0 }));
+  };
+
+  const clearFilters = () => {
+    setSearch("");
+    setSpecialization("");
+    setHospital("");
+    resetToFirstPage();
+  };
+
+  const errorMessage =
+    isError && error instanceof ApiRequestError ? error.message : undefined;
+
+  return (
+    <>
+      <PageHeader
+        title="Doctors"
+        description="Browse and manage doctors on the clinic roster."
+        actions={
+          <Button type="button" onClick={() => setCreateOpen(true)}>
+            <Plus className="size-4" aria-hidden="true" />
+            Add doctor
+          </Button>
+        }
+      />
+
+      <Card>
+        <CardHeader className="gap-4">
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+            <div className="flex flex-col gap-2 sm:col-span-2 xl:col-span-2">
+              <Label htmlFor="doctor-search">Search</Label>
+              <div className="relative">
+                <Search
+                  className="text-muted-foreground pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2"
+                  aria-hidden="true"
+                />
+                <Input
+                  id="doctor-search"
+                  value={search}
+                  onChange={(event) => {
+                    setSearch(event.target.value);
+                    resetToFirstPage();
+                  }}
+                  placeholder="Search by name or email"
+                  className="pl-9"
+                />
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="doctor-specialization-filter">Specialization</Label>
+              {filterOptionsPending ? (
+                <Skeleton className="h-8 w-full" />
+              ) : (
+                <SearchableCombobox
+                  id="doctor-specialization-filter"
+                  value={specialization}
+                  onValueChange={(next) => {
+                    setSpecialization(next);
+                    resetToFirstPage();
+                  }}
+                  options={filterOptions?.specializations ?? []}
+                  placeholder="All specializations"
+                  searchPlaceholder="Search specializations..."
+                  allLabel="All specializations"
+                  disabled={filterOptionsError}
+                />
+              )}
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="doctor-hospital-filter">Hospital</Label>
+              {filterOptionsPending ? (
+                <Skeleton className="h-8 w-full" />
+              ) : (
+                <SearchableCombobox
+                  id="doctor-hospital-filter"
+                  value={hospital}
+                  onValueChange={(next) => {
+                    setHospital(next);
+                    resetToFirstPage();
+                  }}
+                  options={filterOptions?.hospitals ?? []}
+                  placeholder="All hospitals"
+                  searchPlaceholder="Search hospitals..."
+                  allLabel="All hospitals"
+                  disabled={filterOptionsError}
+                />
+              )}
+            </div>
+
+            <DoctorsTableColumnMenu
+              columns={doctorTableColumns}
+              columnVisibility={columnVisibility}
+              onColumnVisibilityChange={setColumnVisibility}
+            />
+          </div>
+
+          {filtersActive ? (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="w-fit"
+              onClick={clearFilters}
+            >
+              <X className="size-4" aria-hidden="true" />
+              Clear filters
+            </Button>
+          ) : null}
+        </CardHeader>
+
+        <CardContent>
+          {errorMessage ? (
+            <p className="text-destructive mb-4 text-sm" role="alert">
+              {errorMessage}
+            </p>
+          ) : null}
+          <DoctorsDataTable
+            columns={doctorTableColumns}
+            data={doctors}
+            pageCount={pageCount}
+            pagination={pagination}
+            onPaginationChange={setPagination}
+            columnVisibility={columnVisibility}
+            onColumnVisibilityChange={setColumnVisibility}
+            isLoading={isPending}
+            isError={isError}
+          />
+        </CardContent>
+      </Card>
+
+      <CreateDoctorDialog open={createOpen} onOpenChange={setCreateOpen} />
+    </>
+  );
+}

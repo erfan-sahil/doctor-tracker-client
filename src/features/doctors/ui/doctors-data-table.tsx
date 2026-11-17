@@ -119,7 +119,7 @@ export function DoctorsDataTable<TData>({
                 <TableRow
                   key={row.id}
                   className={cn(
-                    onRowClick && "hover:bg-muted/50 cursor-pointer",
+                    onRowClick && "cursor-pointer",
                   )}
                   onClick={() => onRowClick?.(row.original)}
                 >
@@ -148,44 +148,62 @@ export function DoctorsDataTable<TData>({
         <p className="text-muted-foreground text-sm">
           Page {pageCount === 0 ? 0 : pageIndex + 1} of {Math.max(pageCount, 1)}
         </p>
-        <div className="flex flex-wrap items-center gap-2">
-          <Select
-            value={String(pagination.pageSize)}
-            onValueChange={(value) =>
-              table.setPageSize(Number(value))
-            }
-          >
-            <SelectTrigger size="sm" className="w-28" aria-label="Rows per page">
-              <SelectValue placeholder="Rows" />
-            </SelectTrigger>
-            <SelectContent>
-              {PAGE_SIZE_OPTIONS.map((size) => (
-                <SelectItem key={size} value={String(size)}>
-                  {size} rows
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Button
-            variant="outline"
-            size="sm"
-            type="button"
-            onClick={() => table.previousPage()}
-            disabled={!canPrevious || isLoading}
-          >
-            <ChevronLeft className="size-4" aria-hidden="true" />
-            Previous
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            type="button"
-            onClick={() => table.nextPage()}
-            disabled={!canNext || isLoading}
-          >
-            Next
-            <ChevronRight className="size-4" aria-hidden="true" />
-          </Button>
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+          <div className="flex items-center gap-2">
+            <span
+              id="doctors-table-page-size-label"
+              className="text-muted-foreground shrink-0 text-sm whitespace-nowrap"
+            >
+              Rows per page
+            </span>
+            <Select
+              value={String(pagination.pageSize)}
+              onValueChange={(value) => table.setPageSize(Number(value))}
+            >
+              <SelectTrigger
+                id="doctors-table-page-size"
+                size="sm"
+                aria-labelledby="doctors-table-page-size-label"
+                className="h-8 min-w-[4.75rem] shrink-0 gap-1 px-2.5 [&_[data-slot=select-value]]:min-w-0"
+              >
+                <SelectValue placeholder="10" />
+              </SelectTrigger>
+              <SelectContent
+                position="popper"
+                align="start"
+                sideOffset={4}
+                className="min-w-[var(--radix-select-trigger-width)] p-1.5"
+              >
+                {PAGE_SIZE_OPTIONS.map((size) => (
+                  <SelectItem key={size} value={String(size)}>
+                    {size}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              type="button"
+              onClick={() => table.previousPage()}
+              disabled={!canPrevious || isLoading}
+            >
+              <ChevronLeft className="size-4" aria-hidden="true" />
+              Previous
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              type="button"
+              onClick={() => table.nextPage()}
+              disabled={!canNext || isLoading}
+            >
+              Next
+              <ChevronRight className="size-4" aria-hidden="true" />
+            </Button>
+          </div>
         </div>
       </div>
     </div>

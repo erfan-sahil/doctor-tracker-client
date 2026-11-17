@@ -25,12 +25,35 @@ export function createDoctorTableColumns(
       ),
     },
     {
-      id: "email",
-      accessorFn: (row) => row.user.email,
-      header: "Email",
-      cell: ({ row }) => (
-        <span className="text-muted-foreground">{row.original.user.email}</span>
-      ),
+      id: "contact",
+      accessorFn: (row) =>
+        [row.user.email, row.doctor.phone?.trim()].filter(Boolean).join(" "),
+      header: "Contact",
+      cell: ({ row }) => {
+        const email = row.original.user.email;
+        const phone = row.original.doctor.phone?.trim();
+
+        return (
+          <div className="flex min-w-0 flex-col gap-0.5">
+            <a
+              href={`mailto:${email}`}
+              className="text-muted-foreground hover:text-foreground truncate text-sm underline-offset-4 hover:underline"
+            >
+              {email}
+            </a>
+            {phone ? (
+              <a
+                href={`tel:${phone.replace(/\s/g, "")}`}
+                className="text-muted-foreground/90 hover:text-foreground truncate text-xs underline-offset-4 hover:underline"
+              >
+                {phone}
+              </a>
+            ) : (
+              <span className="text-muted-foreground text-xs">No phone</span>
+            )}
+          </div>
+        );
+      },
     },
     {
       id: "specialization",

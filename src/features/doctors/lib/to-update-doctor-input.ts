@@ -7,6 +7,7 @@ export function toUpdateDoctorInput(values: UpdateDoctorFormValues): UpdateDocto
 
   return {
     name: values.name.trim(),
+    phone: values.phone.trim(),
     specialization: specialization.length > 0 ? specialization : null,
     hospital: hospital.length > 0 ? hospital : null,
   };

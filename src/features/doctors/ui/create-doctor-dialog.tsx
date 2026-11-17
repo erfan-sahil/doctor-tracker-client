@@ -43,6 +43,7 @@ type CreateDoctorDialogProps = {
 
 const defaultValues: CreateDoctorFormValues = {
   name: "",
+  phone: "",
   email: "",
   password: "",
   specialization: "",
@@ -142,6 +143,27 @@ export function CreateDoctorDialog({ open, onOpenChange }: CreateDoctorDialogPro
                       <Input
                         autoComplete="name"
                         placeholder="e.g. Dr. Jane Smith"
+                        disabled={pending}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Phone</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="tel"
+                        autoComplete="tel"
+                        inputMode="tel"
+                        placeholder="e.g. +1 (555) 123-4567"
                         disabled={pending}
                         {...field}
                       />

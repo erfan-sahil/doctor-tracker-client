@@ -44,6 +44,7 @@ type UpdateDoctorDialogProps = {
 function valuesFromDoctor(doctor: DoctorWithUser): UpdateDoctorFormValues {
   return {
     name: doctor.doctor.name,
+    phone: doctor.doctor.phone ?? "",
     specialization: doctor.doctor.specialization ?? "",
     hospital: doctor.doctor.hospital ?? "",
   };
@@ -52,7 +53,7 @@ function valuesFromDoctor(doctor: DoctorWithUser): UpdateDoctorFormValues {
 export function UpdateDoctorDialog({ doctor, open, onOpenChange }: UpdateDoctorDialogProps) {
   const form = useForm<UpdateDoctorFormValues>({
     resolver: zodResolver(updateDoctorSchema),
-    defaultValues: { name: "", specialization: "", hospital: "" },
+    defaultValues: { name: "", phone: "", specialization: "", hospital: "" },
     mode: "onSubmit",
   });
 
@@ -122,6 +123,27 @@ export function UpdateDoctorDialog({ doctor, open, onOpenChange }: UpdateDoctorD
                       <Input
                         autoComplete="name"
                         placeholder="e.g. Dr. Jane Smith"
+                        disabled={pending}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Phone</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="tel"
+                        autoComplete="tel"
+                        inputMode="tel"
+                        placeholder="e.g. +1 (555) 123-4567"
                         disabled={pending}
                         {...field}
                       />

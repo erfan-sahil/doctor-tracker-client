@@ -7,6 +7,7 @@ export function toCreateDoctorInput(values: CreateDoctorFormValues): CreateDocto
 
   return {
     name: values.name.trim(),
+    phone: values.phone.trim(),
     email: values.email.trim(),
     password: values.password,
     ...(specialization ? { specialization } : {}),

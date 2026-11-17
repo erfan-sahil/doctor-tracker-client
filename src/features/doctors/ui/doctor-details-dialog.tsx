@@ -1,6 +1,6 @@
 "use client";
 
-import { Building2, Mail, ShieldCheck, Stethoscope } from "lucide-react";
+import { Building2, Mail, Phone, ShieldCheck, Stethoscope } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 import type { DoctorWithUser } from "@/features/doctors/model/types";
@@ -178,6 +178,12 @@ export function DoctorDetailsDialog({
           <DetailsSection title="Practice">
             <div className="grid gap-3 sm:grid-cols-2">
               <DetailField
+                icon={Phone}
+                label="Phone"
+                value={profile.phone?.trim() || "Not set"}
+                empty={!profile.phone?.trim()}
+              />
+              <DetailField
                 icon={Stethoscope}
                 label="Specialization"
                 value={profile.specialization ?? "Not set"}
@@ -188,6 +194,7 @@ export function DoctorDetailsDialog({
                 label="Hospital"
                 value={profile.hospital ?? "Not set"}
                 empty={!profile.hospital}
+                className="sm:col-span-2"
               />
             </div>
           </DetailsSection>

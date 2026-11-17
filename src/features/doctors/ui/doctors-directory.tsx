@@ -173,7 +173,7 @@ export function DoctorsDirectory() {
                   onValueChange={setSearch}
                   onDebouncedChange={setDebouncedSearch}
                   debounceMs={DOCTOR_SEARCH_DEBOUNCE_MS}
-                  placeholder="Search by name or email"
+                  placeholder="Search by name, email, or phone"
                   className="pl-9"
                 />
               </div>

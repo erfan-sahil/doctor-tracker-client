@@ -3,6 +3,7 @@ import type { PublicUser } from "@/features/auth/model/types";
 export type Doctor = {
   id: string;
   name: string;
+  phone: string;
   specialization: string | null;
   hospital: string | null;
 };
@@ -37,6 +38,7 @@ export type DoctorFilterOptions = {
 
 export type CreateDoctorInput = {
   name: string;
+  phone: string;
   email: string;
   password: string;
   specialization?: string;
@@ -45,6 +47,7 @@ export type CreateDoctorInput = {
 
 export type UpdateDoctorInput = {
   name?: string;
+  phone?: string;
   specialization?: string | null;
   hospital?: string | null;
 };

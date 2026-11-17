@@ -129,6 +129,15 @@
   --table-header: color-mix(in oklch, var(--card), var(--primary) 11%);
 }
 
+@keyframes dashboard-nav-progress {
+  0% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(380%);
+  }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

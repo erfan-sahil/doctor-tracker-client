@@ -1,17 +1,22 @@
 import * as React from "react";
 
 const MOBILE_BREAKPOINT = 768;
+const MOBILE_MEDIA_QUERY = `(max-width: ${MOBILE_BREAKPOINT - 1}px)`;
+
+function getMobileMediaQuery() {
+  return window.matchMedia(MOBILE_MEDIA_QUERY);
+}
 
 function subscribe(onStoreChange: () => void) {
-  const mediaQuery = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
+  const mediaQuery = getMobileMediaQuery();
   mediaQuery.addEventListener("change", onStoreChange);
   return () => mediaQuery.removeEventListener("change", onStoreChange);
 }
 
+function getSnapshot() {
+  return getMobileMediaQuery().matches;
+}
+
 export function useIsMobile() {
-  return React.useSyncExternalStore(
-    subscribe,
-    () => window.innerWidth < MOBILE_BREAKPOINT,
-    () => false,
-  );
+  return React.useSyncExternalStore(subscribe, getSnapshot, () => false);
 }

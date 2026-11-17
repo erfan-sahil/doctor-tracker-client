@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useMemo, type ReactNode } from "react";
 import { LayoutDashboard, Stethoscope, Users } from "lucide-react";
@@ -10,6 +9,13 @@ import { useSessionStore } from "@/features/auth/model/session-store";
 import { SidebarUserMenu } from "@/features/auth/ui/sidebar-user-menu";
 import { siteConfig } from "@/shared/config/site";
 import { BrandWordmark } from "@/shared/ui/brand-wordmark";
+import {
+  DashboardMobileSidebarSync,
+  DashboardNavLink,
+  DashboardNavigationProgress,
+  DashboardNavigationProvider,
+  DashboardNavigationSpinner,
+} from "@/shared/ui/dashboard-navigation";
 import { Separator } from "@/shared/ui/separator";
 import { ThemeToggle } from "@/shared/ui/theme-toggle";
 import {
@@ -57,7 +63,9 @@ export function DashboardShell({ children }: { children: ReactNode }) {
   );
 
   return (
+    <DashboardNavigationProvider>
     <SidebarProvider>
+      <DashboardMobileSidebarSync />
       <Sidebar collapsible="icon">
         <SidebarHeader className="gap-2 pb-0">
           <SidebarMenu className="gap-0">
@@ -68,7 +76,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                 tooltip={siteConfig.name}
                 className="hover:bg-transparent hover:text-sidebar-foreground active:bg-transparent active:text-sidebar-foreground data-active:bg-transparent data-active:text-sidebar-foreground data-active:font-semibold"
               >
-                <Link href={siteConfig.routes.overview} aria-label={siteConfig.name}>
+                <DashboardNavLink href={siteConfig.routes.overview} aria-label={siteConfig.name}>
                   <Image
                     src={siteConfig.brandIcon}
                     alt=""
@@ -78,7 +86,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                     priority
                   />
                   <BrandWordmark />
-                </Link>
+                </DashboardNavLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
@@ -100,10 +108,10 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                         tooltip={item.label}
                         className="min-h-10 gap-2.5 px-2.5 py-2 [&_svg]:size-[1.125rem]"
                       >
-                        <Link href={item.href} aria-current={active ? "page" : undefined}>
+                        <DashboardNavLink href={item.href} aria-current={active ? "page" : undefined}>
                           <Icon />
                           <span>{item.label}</span>
-                        </Link>
+                        </DashboardNavLink>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                   );
@@ -117,7 +125,8 @@ export function DashboardShell({ children }: { children: ReactNode }) {
         </SidebarFooter>
         <SidebarRail />
       </Sidebar>
-      <SidebarInset className="min-h-svh min-w-0">
+      <SidebarInset className="flex min-h-svh min-w-0 flex-col">
+        <DashboardNavigationProgress />
         <header className="bg-background/95 supports-backdrop-filter:backdrop-blur-sm sticky top-0 z-10 flex min-h-14 shrink-0 items-center gap-2 border-b px-3 sm:gap-3 sm:px-4 md:px-6">
           <SidebarTrigger className="shrink-0" />
           <Separator orientation="vertical" className="hidden h-4 sm:block" />
@@ -126,10 +135,14 @@ export function DashboardShell({ children }: { children: ReactNode }) {
           </span>
           <ThemeToggle />
         </header>
-        <div className="mx-auto flex w-full min-w-0 max-w-6xl flex-1 flex-col p-3 sm:p-4 md:p-6 md:pb-8">
-          {children}
+        <div className="relative flex min-h-0 min-w-0 flex-1 flex-col">
+          <DashboardNavigationSpinner />
+          <div className="mx-auto flex w-full min-w-0 max-w-6xl flex-1 flex-col p-3 sm:p-4 md:p-6 md:pb-8">
+            {children}
+          </div>
         </div>
       </SidebarInset>
     </SidebarProvider>
+    </DashboardNavigationProvider>
   );
 }

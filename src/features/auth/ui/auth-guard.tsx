@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, type ReactNode } from "react";
+import { Suspense, useEffect, type ReactNode } from "react";
 
 import { sanitizeNext } from "@/features/auth/lib/sanitize-next";
 import { siteConfig } from "@/shared/config/site";
@@ -38,7 +38,9 @@ export function AuthGuard({ children }: { children: ReactNode }) {
 
   return (
     <>
-      <AuthSessionRedirect />
+      <Suspense fallback={null}>
+        <AuthSessionRedirect />
+      </Suspense>
       {!isAuthenticated ? <AuthLoading /> : null}
       <div
         className={cn(!isAuthenticated && "hidden")}

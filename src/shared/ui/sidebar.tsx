@@ -32,7 +32,8 @@ type SidebarContextProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
   openMobile: boolean;
-  setOpenMobile: (open: boolean) => void;
+  setOpenMobile: (open: boolean | ((open: boolean) => boolean)) => void;
+  closeMobileSidebarForNavigation: () => void;
   isMobile: boolean;
   toggleSidebar: () => void;
 };
@@ -62,7 +63,23 @@ function SidebarProvider({
   onOpenChange?: (open: boolean) => void;
 }) {
   const isMobile = useIsMobile();
-  const [openMobile, setOpenMobile] = React.useState(false);
+  const [openMobile, _setOpenMobile] = React.useState(false);
+  const mobileOpenSuppressUntilRef = React.useRef(0);
+
+  const setOpenMobile = React.useCallback((value: boolean | ((open: boolean) => boolean)) => {
+    _setOpenMobile((current) => {
+      const next = typeof value === "function" ? value(current) : value;
+      if (next && Date.now() < mobileOpenSuppressUntilRef.current) {
+        return current;
+      }
+      return next;
+    });
+  }, []);
+
+  const closeMobileSidebarForNavigation = React.useCallback(() => {
+    mobileOpenSuppressUntilRef.current = Date.now() + 700;
+    _setOpenMobile(false);
+  }, []);
 
   // This is the internal state of the sidebar.
   // We use openProp and setOpenProp for control from outside the component.
@@ -113,9 +130,19 @@ function SidebarProvider({
       isMobile,
       openMobile,
       setOpenMobile,
+      closeMobileSidebarForNavigation,
       toggleSidebar,
     }),
-    [state, open, setOpen, isMobile, openMobile, setOpenMobile, toggleSidebar],
+    [
+      state,
+      open,
+      setOpen,
+      isMobile,
+      openMobile,
+      setOpenMobile,
+      closeMobileSidebarForNavigation,
+      toggleSidebar,
+    ],
   );
 
   return (
@@ -179,6 +206,15 @@ function Sidebar({
           data-sidebar="sidebar"
           data-slot="sidebar"
           data-mobile="true"
+          onCloseAutoFocus={(event) => {
+            event.preventDefault();
+          }}
+          onInteractOutside={(event) => {
+            const target = event.target;
+            if (target instanceof Element && target.closest("[data-sidebar='trigger']")) {
+              event.preventDefault();
+            }
+          }}
           className="bg-sidebar text-sidebar-foreground w-(--sidebar-width) p-0 [&>button]:hidden"
           style={
             {
@@ -501,7 +537,7 @@ function SidebarMenuButton({
     />
   );
 
-  if (!tooltip) {
+  if (!tooltip || isMobile) {
     return button;
   }
 

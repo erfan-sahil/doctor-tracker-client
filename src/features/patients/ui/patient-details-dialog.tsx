@@ -111,24 +111,23 @@ export function PatientDetailsDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="gap-0 overflow-hidden p-0 sm:max-w-xl">
         <DialogHeader className={patientDetailsHeaderClassName}>
-          <p className="text-primary text-xs font-semibold tracking-[0.14em] uppercase">
-            Patient record
-          </p>
-
-          <div className="flex flex-col gap-5 sm:flex-row sm:items-start">
+          <div className="flex items-center gap-4">
             <div
               className={cn(
-                "relative flex size-18 shrink-0 items-center justify-center",
-                "rounded-2xl bg-linear-to-br from-primary/25 via-primary/15 to-primary/5",
-                "text-primary text-xl font-semibold",
+                "relative flex size-14 shrink-0 items-center justify-center",
+                "rounded-xl bg-linear-to-br from-primary/25 via-primary/15 to-primary/5",
+                "text-primary text-base font-semibold",
               )}
               aria-hidden
             >
               {patientInitials(patient.name)}
             </div>
 
-            <div className="flex min-w-0 flex-1 flex-col gap-3">
-              <DialogTitle className="text-xl leading-tight font-semibold tracking-tight sm:text-2xl">
+            <div className="flex min-w-0 flex-1 flex-col gap-1">
+              <p className="text-primary text-xs font-semibold tracking-[0.14em] uppercase">
+                Patient record
+              </p>
+              <DialogTitle className="text-xl leading-tight font-semibold tracking-tight">
                 {patient.name}
               </DialogTitle>
             </div>

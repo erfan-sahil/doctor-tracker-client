@@ -10,12 +10,12 @@ export const patientDialogBodyClassName = "flex flex-col gap-5 px-6 py-5";
 
 export const patientDetailsHeaderClassName = cn(
   patientDialogHeaderClassName,
-  "gap-5 border-b-0 pb-5",
+  "gap-3 border-b border-border/60 py-4",
 );
 
-export const patientDetailsBodyClassName = "flex flex-col gap-8 bg-background px-6 py-6";
+export const patientDetailsBodyClassName = "flex flex-col gap-6 bg-background px-6 py-5";
 
-export const patientDetailsSectionClassName = "flex flex-col gap-3.5";
+export const patientDetailsSectionClassName = "flex flex-col gap-3";
 
 export const patientDeleteDialogHeaderClassName = cn(
   "gap-2 border-b border-destructive/12 px-6 py-5 text-left",

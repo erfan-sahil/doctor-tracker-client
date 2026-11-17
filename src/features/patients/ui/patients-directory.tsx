@@ -20,12 +20,12 @@ import {
   type PatientTableActions,
 } from "@/features/patients/ui/patients-table-columns";
 import { PatientsTableColumnMenu } from "@/features/patients/ui/patients-table-column-menu";
+import { PatientVisitDateFilter } from "@/features/patients/ui/patient-visit-date-filter";
 import { UpdatePatientDialog } from "@/features/patients/ui/update-patient-dialog";
 import { ApiRequestError } from "@/shared/lib/api/errors";
 import { Button } from "@/shared/ui/button";
 import { Card, CardContent, CardHeader } from "@/shared/ui/card";
 import { DebouncedSearchInput } from "@/shared/ui/debounced-search-input";
-import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
 import { PageHeader } from "@/shared/ui/page-header";
 import { SearchableCombobox } from "@/shared/ui/searchable-combobox";
@@ -269,15 +269,14 @@ export function PatientsDirectory() {
 
             <div className="flex min-w-0 flex-col gap-2">
               <Label htmlFor="patient-date-filter">Visit date</Label>
-              <Input
+              <PatientVisitDateFilter
                 id="patient-date-filter"
-                type="date"
                 value={visitDate}
-                onChange={(event) => {
-                  setVisitDate(event.target.value);
+                onValueChange={(next) => {
+                  setVisitDate(next);
                   resetToFirstPage();
                 }}
-                className="h-8"
+                placeholder="All dates"
               />
             </div>
 

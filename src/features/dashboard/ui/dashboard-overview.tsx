@@ -51,7 +51,7 @@ export function DashboardOverview() {
                 <CardDescription>{stat.label}</CardDescription>
                 <CardTitle className="text-3xl font-semibold">{stat.value}</CardTitle>
                 <CardAction>
-                  <span className="bg-secondary text-secondary-foreground flex size-8 items-center justify-center rounded-lg">
+                  <span className="bg-primary/10 text-primary flex size-8 items-center justify-center rounded-lg">
                     <Icon className="size-4" aria-hidden="true" />
                   </span>
                 </CardAction>
@@ -99,7 +99,7 @@ export function DashboardOverview() {
             {Array.from({ length: 12 }, (_, index) => (
               <div
                 key={index}
-                className="bg-secondary flex-1 rounded-t-md"
+                className="bg-primary/20 flex-1 rounded-t-md"
                 style={{ height: "12%" }}
               />
             ))}

@@ -7,6 +7,7 @@ import { LayoutDashboard, Stethoscope, Users } from "lucide-react";
 
 import { siteConfig } from "@/shared/config/site";
 import { Separator } from "@/shared/ui/separator";
+import { ThemeToggle } from "@/shared/ui/theme-toggle";
 import {
   Sidebar,
   SidebarContent,
@@ -98,7 +99,8 @@ export function DashboardShell({ children }: { children: ReactNode }) {
         <header className="flex h-14 shrink-0 items-center gap-2 border-b px-4">
           <SidebarTrigger />
           <Separator orientation="vertical" className="h-4" />
-          <span className="text-sm font-medium">{siteConfig.name}</span>
+          <span className="flex-1 text-sm font-medium">{siteConfig.name}</span>
+          <ThemeToggle />
         </header>
         <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col p-4 md:p-6">
           {children}

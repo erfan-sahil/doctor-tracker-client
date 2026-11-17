@@ -6,4 +6,5 @@ export const patientKeys = {
   list: (params: ListPatientsParams) => [...patientKeys.lists(), params] as const,
   details: () => [...patientKeys.all, "detail"] as const,
   detail: (id: string) => [...patientKeys.details(), id] as const,
+  filterOptions: () => [...patientKeys.all, "filter-options"] as const,
 };

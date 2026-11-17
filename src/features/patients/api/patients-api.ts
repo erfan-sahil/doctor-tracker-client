@@ -6,8 +6,13 @@ import type {
   ListPatientsParams,
   PaginatedPatients,
   Patient,
+  PatientFilterOptions,
   UpdatePatientInput,
 } from "../model/types";
+
+export function listPatientFilterOptions(): Promise<PatientFilterOptions> {
+  return apiData(apiClient.get<ApiSuccess<PatientFilterOptions>>("/patients/filters"));
+}
 
 export function listPatients(
   params: ListPatientsParams = {},

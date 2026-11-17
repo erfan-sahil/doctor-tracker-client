@@ -1,0 +1,27 @@
+import { cn } from "@/shared/lib/utils";
+
+export const patientDialogHeaderClassName = cn(
+  "gap-2 border-b border-primary/22 px-6 py-5 text-left",
+  "bg-[color-mix(in_oklch,var(--primary),var(--background)_86%)]",
+  "dark:border-primary/20 dark:bg-[color-mix(in_oklch,var(--card),var(--primary)_9%)]",
+);
+
+export const patientDialogBodyClassName = "flex flex-col gap-5 px-6 py-5";
+
+export const patientDetailsHeaderClassName = cn(
+  patientDialogHeaderClassName,
+  "gap-5 border-b-0 pb-5",
+);
+
+export const patientDetailsBodyClassName = "flex flex-col gap-8 bg-background px-6 py-6";
+
+export const patientDetailsSectionClassName = "flex flex-col gap-3.5";
+
+export const patientDeleteDialogHeaderClassName = cn(
+  "gap-2 border-b border-destructive/12 px-6 py-5 text-left",
+  "bg-[color-mix(in_oklch,var(--destructive),var(--background)_94%)]",
+  "dark:border-destructive/12 dark:bg-[color-mix(in_oklch,var(--card),var(--destructive)_5%)]",
+);
+
+export const patientDialogFooterClassName =
+  "mx-0 mb-0 gap-3 border-t border-border bg-muted/40 px-6 py-4 dark:bg-white/[0.04] sm:flex-row sm:justify-end [&_[data-slot=button]]:cursor-pointer";

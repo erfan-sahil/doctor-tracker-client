@@ -14,6 +14,16 @@ export type PaginatedPatients = {
   totalPages: number;
 };
 
+export type PatientFilterDoctorOption = {
+  id: string;
+  name: string;
+  email: string;
+};
+
+export type PatientFilterOptions = {
+  conditions: string[];
+};
+
 export type ListPatientsParams = {
   page?: number;
   limit?: number;

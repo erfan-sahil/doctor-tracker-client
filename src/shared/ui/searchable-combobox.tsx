@@ -23,7 +23,8 @@ type SearchableComboboxProps = {
   placeholder: string;
   searchPlaceholder?: string;
   emptyLabel?: string;
-  allLabel: string;
+  allLabel?: string;
+  allowCustom?: boolean;
   disabled?: boolean;
   className?: string;
 };
@@ -37,10 +38,12 @@ export function SearchableCombobox({
   searchPlaceholder = "Search...",
   emptyLabel = "No results found.",
   allLabel,
+  allowCustom = false,
   disabled = false,
   className,
 }: SearchableComboboxProps) {
   const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState("");
 
   const mergedOptions = useMemo(() => {
     if (!value || options.includes(value)) {
@@ -52,8 +55,33 @@ export function SearchableCombobox({
 
   const displayLabel = value || placeholder;
 
+  const normalizedSearch = search.trim();
+  const filteredOptions = useMemo(() => {
+    if (!allowCustom || !normalizedSearch) {
+      return mergedOptions;
+    }
+
+    const query = normalizedSearch.toLowerCase();
+    return mergedOptions.filter((option) => option.toLowerCase().includes(query));
+  }, [allowCustom, mergedOptions, normalizedSearch]);
+
+  const canCreateCustom =
+    allowCustom &&
+    normalizedSearch.length > 0 &&
+    !mergedOptions.some(
+      (option) => option.toLowerCase() === normalizedSearch.toLowerCase(),
+    );
+
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover
+      open={open}
+      onOpenChange={(next) => {
+        setOpen(next);
+        if (!next) {
+          setSearch("");
+        }
+      }}
+    >
       <PopoverTrigger asChild>
         <Button
           id={id}
@@ -76,31 +104,58 @@ export function SearchableCombobox({
         className="w-[var(--radix-popover-trigger-width)] p-0"
         align="start"
       >
-        <Command>
-          <CommandInput placeholder={searchPlaceholder} />
+        <Command shouldFilter={!allowCustom}>
+          <CommandInput
+            placeholder={searchPlaceholder}
+            value={search}
+            onValueChange={setSearch}
+          />
           <CommandList>
             <CommandEmpty>{emptyLabel}</CommandEmpty>
             <CommandGroup>
-              <CommandItem
-                value={allLabel}
-                onSelect={() => {
-                  onValueChange("");
-                  setOpen(false);
-                }}
-              >
-                <Check
-                  className={cn("size-4", value ? "opacity-0" : "opacity-100")}
-                  aria-hidden="true"
-                />
-                {allLabel}
-              </CommandItem>
-              {mergedOptions.map((option) => (
+              {allLabel ? (
+                <CommandItem
+                  value={allLabel}
+                  onSelect={() => {
+                    onValueChange("");
+                    setOpen(false);
+                    setSearch("");
+                  }}
+                >
+                  <Check
+                    className={cn("size-4", value ? "opacity-0" : "opacity-100")}
+                    aria-hidden="true"
+                  />
+                  {allLabel}
+                </CommandItem>
+              ) : null}
+              {canCreateCustom ? (
+                <CommandItem
+                  value={normalizedSearch}
+                  onSelect={() => {
+                    onValueChange(normalizedSearch);
+                    setOpen(false);
+                    setSearch("");
+                  }}
+                >
+                  <Check
+                    className={cn(
+                      "size-4",
+                      value === normalizedSearch ? "opacity-100" : "opacity-0",
+                    )}
+                    aria-hidden="true"
+                  />
+                  Use &ldquo;{normalizedSearch}&rdquo;
+                </CommandItem>
+              ) : null}
+              {filteredOptions.map((option) => (
                 <CommandItem
                   key={option}
                   value={option}
                   onSelect={() => {
                     onValueChange(option);
                     setOpen(false);
+                    setSearch("");
                   }}
                 >
                   <Check

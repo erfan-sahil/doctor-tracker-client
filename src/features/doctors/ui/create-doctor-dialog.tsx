@@ -1,20 +1,18 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
-import { createDoctor } from "@/features/doctors/api/doctors-api";
+import { toCreateDoctorInput } from "@/features/doctors/lib/to-create-doctor-input";
+import { useCreateDoctorMutation } from "@/features/doctors/mutations/use-create-doctor";
 import {
   createDoctorSchema,
   type CreateDoctorFormValues,
 } from "@/features/doctors/model/create-doctor-schema";
-import type { CreateDoctorInput } from "@/features/doctors/model/types";
-import { doctorKeys } from "@/features/doctors/queries/keys";
 import { ApiRequestError } from "@/shared/lib/api/errors";
-import { getQueryClient } from "@/shared/lib/query/client";
+import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
 import {
   Dialog,
@@ -24,9 +22,17 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/shared/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/shared/ui/form";
 import { Input } from "@/shared/ui/input";
-import { Label } from "@/shared/ui/label";
 import { PasswordInput } from "@/shared/ui/password-input";
+import { DialogScrollArea } from "@/shared/ui/scroll-area";
 
 type CreateDoctorDialogProps = {
   open: boolean;
@@ -41,143 +47,226 @@ const defaultValues: CreateDoctorFormValues = {
   hospital: "",
 };
 
-function toCreateDoctorInput(values: CreateDoctorFormValues): CreateDoctorInput {
-  const specialization = values.specialization?.trim();
-  const hospital = values.hospital?.trim();
+const dialogHeaderClassName = cn(
+  "gap-2 border-b border-primary/22 px-6 py-5 text-left",
+  "bg-[color-mix(in_oklch,var(--primary),var(--background)_86%)]",
+  "dark:border-primary/20 dark:bg-[color-mix(in_oklch,var(--card),var(--primary)_9%)]",
+);
 
-  return {
-    name: values.name.trim(),
-    email: values.email.trim(),
-    password: values.password,
-    ...(specialization ? { specialization } : {}),
-    ...(hospital ? { hospital } : {}),
-  };
+const dialogBodyClassName = "flex flex-col gap-5 px-6 py-5 pr-3";
+
+const dialogFooterClassName =
+  "mx-0 mb-0 gap-3 border-t bg-muted/50 px-6 py-4 sm:flex-row sm:justify-end";
+
+const fieldPasswordClassName =
+  "h-8 rounded-lg border-input bg-transparent px-2.5 py-1 pr-11 text-sm shadow-none md:text-sm";
+
+function applyCreateDoctorError(
+  error: unknown,
+  setError: ReturnType<typeof useForm<CreateDoctorFormValues>>["setError"],
+) {
+  if (!(error instanceof ApiRequestError)) {
+    setError("root", { message: "Unable to create doctor. Try again." });
+    return;
+  }
+
+  if (error.status === 409) {
+    setError("email", { message: error.message });
+    return;
+  }
+
+  setError("root", { message: error.message });
 }
 
 export function CreateDoctorDialog({ open, onOpenChange }: CreateDoctorDialogProps) {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    setError,
-    formState: { errors },
-  } = useForm<CreateDoctorFormValues>({
+  const form = useForm<CreateDoctorFormValues>({
     resolver: zodResolver(createDoctorSchema),
     defaultValues,
     mode: "onSubmit",
   });
 
+  const { reset, setError, clearErrors, formState } = form;
+  const rootError = formState.errors.root?.message;
+
+  const createMutation = useCreateDoctorMutation();
+
   useEffect(() => {
     if (!open) {
       reset(defaultValues);
+      clearErrors();
     }
-  }, [open, reset]);
+  }, [open, reset, clearErrors]);
 
-  const createMutation = useMutation({
-    mutationFn: createDoctor,
-    onSuccess: async () => {
-      await Promise.all([
-        getQueryClient().invalidateQueries({ queryKey: doctorKeys.lists() }),
-        getQueryClient().invalidateQueries({ queryKey: doctorKeys.filterOptions() }),
-      ]);
+  const onSubmit = form.handleSubmit(async (values) => {
+    clearErrors("root");
+
+    try {
+      await createMutation.mutateAsync(toCreateDoctorInput(values));
       reset(defaultValues);
       onOpenChange(false);
-    },
-    onError: (error) => {
-      const message =
-        error instanceof ApiRequestError
-          ? error.message
-          : "Unable to create doctor. Try again.";
-      setError("root", { message });
-    },
-  });
-
-  const onSubmit = handleSubmit((values) => {
-    createMutation.mutate(toCreateDoctorInput(values));
+    } catch (error) {
+      applyCreateDoctorError(error, setError);
+    }
   });
 
   const pending = createMutation.isPending;
-  const rootError = errors.root?.message;
+
+  const handleOpenChange = (next: boolean) => {
+    if (pending) {
+      return;
+    }
+
+    onOpenChange(next);
+  };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>Add doctor</DialogTitle>
-          <DialogDescription>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
+      <DialogContent className="!flex max-h-[90dvh] flex-col gap-0 overflow-hidden p-0 sm:max-w-lg">
+        <DialogHeader className={cn(dialogHeaderClassName, "shrink-0")}>
+          <p className="text-primary text-xs font-semibold tracking-[0.14em] uppercase">
+            New doctor
+          </p>
+          <DialogTitle className="text-lg font-semibold tracking-tight">Add doctor</DialogTitle>
+          <DialogDescription className="text-muted-foreground text-sm leading-relaxed">
             Create a doctor account with login credentials for the clinic roster.
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={onSubmit} className="flex flex-col gap-4">
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="doctor-name">Name</Label>
-            <Input
-              id="doctor-name"
-              autoComplete="name"
-              aria-invalid={!!errors.name}
-              {...register("name")}
-            />
-            {errors.name ? (
-              <p className="text-destructive text-xs">{errors.name.message}</p>
-            ) : null}
-          </div>
+        <Form {...form}>
+          <form
+            onSubmit={onSubmit}
+            noValidate
+            className="flex min-h-0 flex-1 flex-col overflow-hidden"
+          >
+            <DialogScrollArea>
+              <div className={dialogBodyClassName}>
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        autoComplete="name"
+                        disabled={pending}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="doctor-email">Email</Label>
-            <Input
-              id="doctor-email"
-              type="email"
-              autoComplete="email"
-              aria-invalid={!!errors.email}
-              {...register("email")}
-            />
-            {errors.email ? (
-              <p className="text-destructive text-xs">{errors.email.message}</p>
-            ) : null}
-          </div>
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="email"
+                        autoComplete="email"
+                        inputMode="email"
+                        disabled={pending}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="doctor-password">Password</Label>
-            <PasswordInput
-              id="doctor-password"
-              autoComplete="new-password"
-              aria-invalid={!!errors.password}
-              {...register("password")}
-            />
-            {errors.password ? (
-              <p className="text-destructive text-xs">{errors.password.message}</p>
-            ) : null}
-          </div>
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <PasswordInput
+                        autoComplete="new-password"
+                        disabled={pending}
+                        className={fieldPasswordClassName}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="doctor-specialization">Specialization (optional)</Label>
-            <Input id="doctor-specialization" {...register("specialization")} />
-            {errors.specialization ? (
-              <p className="text-destructive text-xs">{errors.specialization.message}</p>
-            ) : null}
-          </div>
+              <FormField
+                control={form.control}
+                name="specialization"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Specialization (optional)</FormLabel>
+                    <FormControl>
+                      <Input
+                        autoComplete="organization-title"
+                        placeholder="e.g. Cardiology"
+                        disabled={pending}
+                        {...field}
+                        value={field.value ?? ""}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="doctor-hospital">Hospital (optional)</Label>
-            <Input id="doctor-hospital" {...register("hospital")} />
-            {errors.hospital ? (
-              <p className="text-destructive text-xs">{errors.hospital.message}</p>
-            ) : null}
-          </div>
+              <FormField
+                control={form.control}
+                name="hospital"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Hospital (optional)</FormLabel>
+                    <FormControl>
+                      <Input
+                        autoComplete="organization"
+                        placeholder="e.g. City General Hospital"
+                        disabled={pending}
+                        {...field}
+                        value={field.value ?? ""}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          {rootError ? <p className="text-destructive text-sm">{rootError}</p> : null}
+              {rootError ? (
+                <p
+                  className="border-destructive/30 bg-destructive/10 text-destructive rounded-lg border px-3 py-2 text-sm"
+                  role="alert"
+                >
+                  {rootError}
+                </p>
+              ) : null}
+              </div>
+            </DialogScrollArea>
 
-          <DialogFooter showCloseButton={false} className="border-t-0 bg-transparent p-0 pt-2">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
-            </Button>
-            <Button type="submit" disabled={pending}>
-              {pending ? <Loader2 className="size-4 animate-spin" aria-hidden="true" /> : null}
-              Create doctor
-            </Button>
-          </DialogFooter>
-        </form>
+            <DialogFooter
+              showCloseButton={false}
+              className={cn(dialogFooterClassName, "shrink-0")}
+            >
+              <Button
+                type="button"
+                variant="outline"
+                disabled={pending}
+                onClick={() => handleOpenChange(false)}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" disabled={pending}>
+                {pending ? <Loader2 className="size-4 animate-spin" aria-hidden /> : null}
+                Create doctor
+              </Button>
+            </DialogFooter>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );

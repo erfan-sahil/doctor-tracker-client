@@ -29,7 +29,7 @@ export default function HomePage() {
         </CardHeader>
         <CardFooter className="justify-center px-4 pb-6 sm:px-6">
           <Button asChild size="lg" className="w-full sm:w-auto">
-            <Link href={siteConfig.routes.dashboard}>Open dashboard</Link>
+            <Link href={siteConfig.routes.login}>Sign in</Link>
           </Button>
         </CardFooter>
       </Card>

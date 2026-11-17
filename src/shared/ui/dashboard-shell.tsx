@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import { LayoutDashboard, Stethoscope, Users } from "lucide-react";
 
+import { LogoutButton } from "@/features/auth/ui/logout-button";
 import { siteConfig } from "@/shared/config/site";
 import { Separator } from "@/shared/ui/separator";
 import { ThemeToggle } from "@/shared/ui/theme-toggle";
@@ -89,7 +90,8 @@ export function DashboardShell({ children }: { children: ReactNode }) {
             </SidebarGroupContent>
           </SidebarGroup>
         </SidebarContent>
-        <SidebarFooter className="border-sidebar-border border-t pt-2">
+        <SidebarFooter className="border-sidebar-border gap-3 border-t pt-2">
+          <LogoutButton />
           <p className="text-muted-foreground px-2 text-xs leading-relaxed group-data-[collapsible=icon]:hidden">
             Doctors, patients, and clinic activity.
           </p>

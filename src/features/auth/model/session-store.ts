@@ -10,14 +10,17 @@ type SessionState = {
   user: PublicUser | null;
   accessToken: string | null;
   status: SessionStatus;
+  isBootstrapped: boolean;
   setSession: (session: Session) => void;
   clearSession: () => void;
+  finishBootstrap: () => void;
 };
 
 export const useSessionStore = create<SessionState>((set) => ({
   user: null,
   accessToken: null,
   status: "anonymous",
+  isBootstrapped: false,
   setSession: ({ user, accessToken }) => {
     set({ user, accessToken, status: "authenticated" });
     setAccessToken(accessToken);
@@ -25,6 +28,9 @@ export const useSessionStore = create<SessionState>((set) => ({
   clearSession: () => {
     set({ user: null, accessToken: null, status: "anonymous" });
     setAccessToken(null);
+  },
+  finishBootstrap: () => {
+    set({ isBootstrapped: true });
   },
 }));
 

@@ -2,7 +2,7 @@ import { z } from "zod";
 
 const apiUrlSchema = z.string().url();
 
-const defaultApiUrl = "http://localhost:5000/api/v1";
+const defaultApiUrl = "http://localhost:5001/api/v1";
 
 function readApiUrl(): string {
   const value = process.env.NEXT_PUBLIC_API_URL;

@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 
-import { siteConfig } from "@/shared/config/site";
-import { Card, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card";
+import { AuthLoading } from "@/features/auth/ui/auth-loading";
+import { GuestGuard } from "@/features/auth/ui/guest-guard";
+import { LoginForm } from "@/features/auth/ui/login-form";
 
 export const metadata: Metadata = {
   title: "Sign in",
@@ -9,13 +11,10 @@ export const metadata: Metadata = {
 
 export default function LoginPage() {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-2xl">Sign in</CardTitle>
-        <CardDescription>
-          Staff sign-in for {siteConfig.name} will live here.
-        </CardDescription>
-      </CardHeader>
-    </Card>
+    <Suspense fallback={<AuthLoading />}>
+      <GuestGuard>
+        <LoginForm />
+      </GuestGuard>
+    </Suspense>
   );
 }

@@ -227,7 +227,7 @@ export function PatientsDirectory() {
                   onValueChange={setSearch}
                   onDebouncedChange={setDebouncedSearch}
                   debounceMs={PATIENT_SEARCH_DEBOUNCE_MS}
-                  placeholder="Search by name"
+                  placeholder="Search by name or condition"
                   className="pl-9"
                 />
               </div>
